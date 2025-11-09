@@ -1,0 +1,112 @@
+/* CARD DE MEMBROS*/
+
+.principal{
+    border: solid 2px;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    
+
+}
+
+#avatar{
+    width: 50px;
+    height: 50px;
+    border: solid black;
+}
+
+.nome-gasto{
+    font-size: 15px;
+    text-align: left;
+    
+    & span{
+        font-size: x-small;
+    }
+}
+
+
+
+/* modal */
+
+.overlay{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.514);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    z-index: 1000;
+    
+    
+    
+}
+
+
+.container-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+}  
+
+
+.scroll-area {
+  padding: 20px;
+  overflow-y: hidden; /* 👈 começa sem scroll visível */
+  max-height: calc(90vh - 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: overflow 0.3s ease;
+}
+
+/* quando o mouse passa em cima do modal, ativa o scroll */
+.form-trans:hover .scroll-area {
+  overflow-y: auto;
+}
+
+/* personaliza o visual do scrollbar */
+.scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-area::-webkit-scrollbar-thumb {
+  background-color: #b7b7b7;
+  border-radius: 8px;
+}
+.form-trans{
+    overflow: hidden;
+    width: 600px;
+    max-height:90vh;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: aliceblue;
+    color: blueviolet;
+    gap: 20px;
+    
+   
+}
+
+
+
+
+.button{
+    display: flex;
+    
+    gap:40px
+
+}
+
+
