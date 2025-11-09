@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000", // backend Express
+  baseURL: "https://fynger.onrender.com", // backend Express
   withCredentials: true, // <— ESSENCIAL
 });
 
