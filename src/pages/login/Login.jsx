@@ -19,6 +19,7 @@ function Login() {
     try {
       
       const res = await api.post("/login", { email, password: senha });
+      localStorage.setItem("token",res.data.token)
       console.log("Usuário logado:", res.data.user);
       navigate("/Home")
       // futuramente: redirecionar para o painel
