@@ -3,9 +3,13 @@ import api from "../../services/api";
 import { useNavigate } from "react-router-dom"; 
 import { useEffect, useState } from "react";
 //import img_default from "../../assets/img_default.png"
-import { GraficoPizza,GraficoLinha, TabelaTransacoes, CardUser, Modal, MiniCard} from "../../components/graficos";
-import { Avatar, Button } from "@mui/material";
+import { GraficoPizza,GraficoLinha, TabelaTransacoes, CardUser, Modal, MiniCard, ModalConfig} from "../../components/graficos";
+import { Avatar, BottomNavigation, BottomNavigationAction, Button,  } from "@mui/material";
 import{ format, subMonths}from 'date-fns'
+import HomeIcon from '@mui/icons-material/Home';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 // const dados = [
 //   {
 //     id: 1,
@@ -64,9 +68,11 @@ const titulo = 'titulo'
 
 function Home() {
   const [showModal, setShowModal] = useState(false)
+  const [showModalconfig, setShowModalConfig] = useState(false)
   const [userName, setUserName] = useState("");
   const [transacoes, setTransacoes]= useState([]);
   const[categorias, setCategorias] = useState([])
+  const[selecao, setSelecao] = useState("")
   const agora = new Date();
   const mesAtual = format(agora,"MM-yyyy")
   const mesAnterior = format(subMonths(agora,1),"MM-yyyy")
@@ -78,7 +84,9 @@ function Home() {
         navigate("/");
     }
 
-    
+      const handleChange = (event, newValue) => {
+        setSelecao(newValue);
+      };
     
     useEffect(() => {
       async function buscarSessao() {
@@ -140,27 +148,37 @@ function Home() {
   console.log(atual)
     return (
     <div className="container1">
-      <aside className="aside">
-        <div>
-          {/* <div className="img">
-          </div> */}
-          <Avatar id="avatare">H</Avatar>  
-          <span>Bem Vindo,{<h1>{userName}</h1>}</span> 
-          
-          <hr /> <Button color="secondary" variant="contained" onClick={()=>{navigate('/home')}}>inicio</Button><hr /> 
-         
-          <Button color="secondary" variant="contained" onClick={()=>{setShowModal(true)}} >Nova transacao</Button><hr /> 
-          
-          <Button  color="secondary" variant="contained"> configurações</Button><hr /> 
-          <Button  color="secondary" variant="contained">relatorios</Button><hr /> 
-          <hr/> 
-          {showModal && (<Modal onClose={()=> setShowModal(false)} />)}
-  
+      <menu className="menu">
+        
+        <div className="informacoes" >
+          <Avatar sx={{width:"50px",height:"50px"}} id="avatare">H</Avatar>  
+          <div className="info-grupo">
+            <span>Bem Vindo,{<h2>{userName}</h2>}</span> 
+            <h5>nome do grupo - mes</h5>
+          </div>
+
         </div>
         
-        <h1 id="logout" onClick={handleLogout}>sair</h1>
+        <BottomNavigation id= "menu-but" value={selecao} onChange={handleChange}
+        sx={{backgroundColor:"transparent"}}>
+          <BottomNavigationAction label="Inicio" value={'inicio'} icon={<HomeIcon/>}  onChange={handleChange} onClick={()=>{navigate('/home')}}/> <hr />
+          <BottomNavigationAction label="Transações"  value={ 'novaTransacao'}icon={<CurrencyExchangeIcon/>} onClick={()=>{setShowModal(true)}} /> <hr />
+          <BottomNavigationAction label="Ajustes" value={'ajustes'} icon={<SettingsIcon/>} onClick={()=>{setShowModalConfig(true)}}/> <hr />
+          <BottomNavigationAction label="Sair" value={'sair'} icon={<ExitToAppIcon/>}  onClick={handleLogout} sx={{color:"red"}}/> hr
+        </BottomNavigation>
+      </menu>
+
+          
+        
+          
+          
+          
+         
+         {showModal && (<Modal onClose={()=> setShowModal(false)} />)}
+         {showModalconfig && (<ModalConfig onClose={()=> setShowModalConfig(false)} />)}
+          
+        
       
-      </aside>
       
       <div className="container-center">
         <div className="dashboard-cards">

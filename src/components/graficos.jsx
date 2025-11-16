@@ -18,16 +18,26 @@ import {
   FormControlLabel,
   TextField,
   Button,
-  CircularProgress
-  
+  CircularProgress,
+  Tab,
+  Tabs,
+  Typography,
+  Box,
+  styled,
+  IconButton,
+
 
 } from "@mui/material";
 import "./components.css";
+
 import Avatar from "@mui/material/Avatar";
 import "./components.css"
 import api from "../services/api";
-import { format } from "date-fns";
+import { format, } from "date-fns";
 import { formatarMoeda } from "../utils/formatarMoeda";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
 // Paleta de cores
 const COLORS = ["#3b234a", "#9dd3df", "#c9d1d3", "#3b3737", "#f7f7f7"];
 // utils/formatarMoeda.js
@@ -478,4 +488,435 @@ export function MiniCard({titulo, valor = 0, valorAnterior = 0}){
       </p>
     </>
   )
+}
+
+
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  backgroundColor: theme.palette.grey[100],
+  borderRadius: "50px",
+  minHeight: 40,
+  marginTop: 40,
+  width: "100%",
+  overflowX: "hidden",
+  "& .MuiTabs-flexContainer": {
+    display: "flex",
+    flexWrap: "wrap",         // ⭐ Agora quebra e não empurra nada
+    gap: theme.spacing(1),
+    padding: theme.spacing(0.5),
+  },
+  "& .MuiTabs-indicator": {
+    display: "none",
+  },
+}));
+
+
+const StyledTab = styled(Tab)(({ theme }) => ({
+  flex: 1,                    // ⭐ Abas se expandem igualmente
+  minWidth: 0,                // ⭐ Permite encolher sem quebrar layout
+  textTransform: "none",
+  minHeight: 36,
+  padding: "2px",
+  borderRadius: 50,
+  backgroundColor: "transparent",
+  color: theme.palette.text.primary,
+  "&.Mui-selected": {
+    backgroundColor: "black",
+    color: theme.palette.common.white,
+  },
+  "&:hover": {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const SubmitButton = styled(Button)({
+  backgroundColor: "black",
+  color: "white",
+  borderRadius: "10px",
+  height: "40px",
+  width: "100%",
+  cursor:"pointer",
+  margin: "15px 0px 15px 0px",
+  '&:hover':{
+    backgroundColor:"#5a5555ff"
+  }
+})
+
+export function ModalConfig({onClose}) {
+  const [tabValue, setTabValue] = useState(0);
+  const [nome, setNome] = useState()
+  const [email, setEmail] = useState('')
+  const [tel, setTel] = useState('')
+  const [senha, setSenha] = useState('')
+  const [novaSenha, setNovaSenha] = useState('')
+  const [nomeGrupo, setNomeGrupo] = useState('')
+  const [categorias, setCategorias] = useState('')
+  const [ tipo, setTipo] = useState('')
+  const [descGrupo, setDescGrupo] = useState('')
+  const [membros, setMembros] = useState()
+  const [nomeCategoria, setNomeCategoria] = useState('')
+  const [transacoes, setTransacoes] =useState('')
+  const handleChange = (event, newValue) => {
+      setTabValue(newValue);
+    };
+
+  useEffect(()=>{
+    async function fetch() {
+      try {
+        const res = await api.get('/atualizar-dados');
+        if(res.data){
+          setNome(res.data.nome)
+          setEmail(res.data.email)
+          setTel(res.data.telefone)
+          setNomeGrupo(res.data.nomeGrupo)
+          setMembros(res.data.membros)
+          setCategorias(res.data.categorias)
+          
+        }
+      } catch (error) {
+        console.log(error)
+        
+      }
+      
+    }
+    async function fetchTransacoes() {
+      try {
+        const res = await api.get("/transacao");
+        if (res.data){setTransacoes(res.data)}
+      } catch (error) {
+        console.log(error)
+      }
+      
+    }
+    fetch();
+    fetchTransacoes();
+  },[])
+  
+  
+  
+  
+  return (
+    
+    <div className="overlay">
+
+      <div className="form-trans">
+        <div className="scroll-area">
+         
+        
+          <Box width="100%"  p={1}  display={"flex"} flexDirection={"column"}  >
+            <Box display={"flex"} justifyContent={"space-between"} >
+              <h1>Configurações </h1>
+              <IconButton size="small" onClick={onClose}>
+                <CloseIcon/>
+              </IconButton>
+              </Box>
+            <span>Gerencie seu perfil, Grupo, Categorias e trasacoes. </span>
+            
+            
+            <StyledTabs value={tabValue} onChange={handleChange} sx={{
+              width:"100%",
+              boxSizing:"border-box"
+            }}  > 
+              <StyledTab label="Perfil" />
+              <StyledTab label="Grupo" />
+              <StyledTab label="Categoria" />
+              <StyledTab label="Transações" />
+            </StyledTabs>
+
+            <Box mt={2} >
+              {tabValue === 0 && (
+                <Box maxWidth={'600px'}> 
+
+                
+                
+                  <Box border={"solid 1px grey"} borderRadius={5} padding={2}>
+                    
+                      <form>
+                        <h3>informaçoes pessoais</h3>
+                        <p>atualize suas informações pessoais</p>
+                        <div className="foto-perfil" id= "inputFoto">
+                          <Avatar sx={{width:"100px", height:"100px"}}/>
+                          <input type="file" name="foto" id="foto" style={{display:"none"}} />
+                          <label for="foto"className="botao-upload">Alterar foto</label>
+                        </div>
+                        <TextField fullWidth margin="normal"
+                        label="Nome completo"
+                        variant="outlined"
+                        size="small"
+                        type="text"
+                        value={nome}
+                        onChange={(e)=>setNome(e.target.value)}/>
+
+                        <TextField fullWidth margin="normal"
+                        label="E-mail"
+                        value={email}
+                        onChange={(e)=>setEmail(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        type="email"/>
+
+                        <TextField fullWidth margin="normal"
+                        label="Telefone"
+                        variant="outlined"
+                        size="small"
+                        type="tel"
+                        value={tel}
+                        onChange={(e)=>setTel(e.target.value)}/>
+
+                        <hr />
+
+                        <TextField fullWidth margin="normal"
+                        label="Senha Atual"
+                        variant="outlined"
+                        size="small"
+                        type="password"
+                        value={senha}
+                        onChange={(e)=>setSenha(e.target.value)}/>
+
+                        <TextField fullWidth margin="normal"
+                        label="Nova Senha"
+                        variant="outlined"
+                        size="small"
+                        type="password"
+                        value={novaSenha}
+                        onChange={(e)=>setNovaSenha(e.target.value)}/>
+
+                        <SubmitButton>Salvar Alterações</SubmitButton>
+
+                      </form>
+                    
+                  </Box>
+                </Box>
+                
+              )}
+              {tabValue === 1 && (
+               <Box maxWidth={"600px"}>
+                  <Box border={"solid 1px grey"} borderRadius={5} padding={2} marginBottom={2}>
+
+                    <h3>Informacoes do grupo</h3>
+                    <p>Configure o nome e descriação do Grupo/Familia</p>
+
+                    <TextField fullWidth
+                    margin="normal"
+                    label ="Nome do grupo"
+                    variant="outlined"
+                    type="text"
+                    size="small"
+                    value={nomeGrupo}
+                    onChange={(e)=>setNomeGrupo(e.target.value)}/>
+
+                    <TextField fullWidth
+                    margin="normal"
+                    label ="Descrição"
+                    variant="outlined"
+                    type="text"
+                    size="small"
+                    value={descGrupo}
+                    onChange={(e)=>setDescGrupo(e.target.value)}/>
+
+                    <SubmitButton> Salvar Alterações</SubmitButton>
+                  </Box>
+                  <Box border={"solid 1px grey"} borderRadius={5} padding={2} marginBottom={2}>
+                    <h3>Membros do grupo</h3>
+                    <p>Gerencie os membros do seu Grupo/Familia</p>
+                      
+                      {membros.map((item)=>(
+                        <Box border={"solid 1px"} padding={'5px'}display={"flex"} gap={'10px'} justifyContent={"space-between"} margin={"10px"} borderRadius={"10px"}>
+                          
+                          <Box display={'flex'} gap={"10px"} alignItems={'center'}>
+                          <Avatar sx={{width:'60px', height:"60px"}}/> 
+                            <Box>
+                              <p>{item.nome}</p>
+                              <h6>{item.email}</h6>
+                            </Box >
+
+                          </Box>  
+                          <IconButton color="error">
+                            <DeleteIcon/>
+                          </IconButton>  
+                        </Box>
+                        
+                      ))}
+                    
+                    <SubmitButton> Convidar Novo Membro</SubmitButton>
+                  </Box>
+                </Box>
+              )}
+              {tabValue === 2 && (
+                <Box maxWidth={"600px"}>
+                  <Box  border={"solid 1px grey"} borderRadius={5} padding={2} marginBottom={2} >
+                    <h3>Adcionar Nova Categoria</h3>
+                    <p>Crie Categorias personalizadas para organizar suas transacoes</p>
+                    <form>
+                      <Box sx={{
+                        display:"flex",
+                        gap:"5px",
+                        alignItems:"center",
+                        padding:"15px"
+                      }}>
+
+                        <TextField margin="normal"
+                          label="Nome da categoria"
+                          type="text"
+                          size="small"
+                          variant="outlined"
+                          value={nomeCategoria}
+                          onChange={(e)=>setNomeCategoria(e.target.value)}/>
+                          
+                          <FormControl sx={{width:"150px" }} margin="normal" size="small">
+                            <InputLabel id="categoria-label">Categorias</InputLabel>
+                            <Select
+                              labelId="categoria-label"
+                              id="categorias"
+                              value={tipo}
+                              onChange={(e)=>setTipo(e.target.value)}
+                              >
+                              <MenuItem value=""><em>Selecione</em></MenuItem>
+                              <MenuItem value="despesa">Despesa</MenuItem>
+                              <MenuItem value="receita">Receita</MenuItem>
+
+                            </Select>
+                            
+                          </FormControl>
+                          
+                          
+                          
+                          <Button sx={{ backgroundColor:"black", color:'#fff' , fontWeight:"bold", height:"100%", overflow:"hidden" }} disabled={!tipo}> Add</Button>
+                      </Box>
+                    </form>
+                  </Box>
+                  <Box  border={"solid 1px grey"} borderRadius={5} padding={2} marginBottom={2}>
+                    <h3 >Categorias de Despesas</h3>
+                    <Box display={"flex"} flexWrap={"wrap"} gap={"15px"} padding={"15px"}>
+
+                      {categorias.map((item)=>(
+                        
+                        item.tipo === "despesa" && (
+                          <Box className="pill-categoria">
+                            <p>{item.nome}</p>
+                            <IconButton size="small">
+                            <DeleteIcon/>
+                          </IconButton>  
+                          </Box>
+                        )
+                        
+                      ))}
+                      
+
+                    </Box>
+                  
+                  </Box>
+                  
+                  
+                  
+                  <Box  border={"solid 1px grey"} borderRadius={5} padding={2} marginBottom={2}>
+                    <h3>Categoria de Receitas</h3>
+                    <Box display={"flex"} flexWrap={"wrap"} gap={"15px"} padding={"15px"}>
+
+                    {categorias.map((item)=>(
+                        
+                        item.tipo === "receita" && (
+                          <Box className="pill-categoria">
+                            <p>{item.nome}</p>
+                            <IconButton size="small">
+                              <DeleteIcon/>
+                            </IconButton> 
+                          </Box>
+                        )
+                        
+                      ))}
+
+                    </Box>
+                  </Box>
+                </Box>
+              )}
+
+
+
+
+              {tabValue === 3 && (
+                <Box maxWidth={"600px"} display={"flex"} flexDirection={"column"} alignItems={"center"} >
+
+
+                  <div className="box-tabela"           >
+                    
+                  
+                    <Box border={"solid 1px grey"} borderRadius={5} padding={1} >
+                      <h3>Gerencie suas transações</h3>
+                      <p>visualize edite ou exclua suas transações</p>
+                      
+                      <TableContainer
+          
+                        sx={{
+                          maxHeight: "400px",         // limite de altura
+                          overflowY: "auto",      // rolagem vertical
+                          borderRadius: 2,
+                          padding: "15px"        // bordas arredondadas
+                        }}
+                      >
+                        
+                        <Table size="small" stickyHeader  
+                        sx={{tableLayout:"auto",
+                          width:"max-content",
+                          whiteSpace: "nowrap"
+                        }} > 
+                          <TableHead sx={{backgroundColor:'transparent'}}>
+                            <TableRow>
+                              <TableCell sx={{ fontWeight: 'bold', backgroundColor:'#814f8bff'}}>Nome</TableCell>
+                              <TableCell sx={{ fontWeight: 'bold', backgroundColor:'#814f8bff'}}>Categoria</TableCell>
+                              <TableCell sx={{ fontWeight: 'bold', backgroundColor:'#814f8bff'}}>Membro</TableCell>
+                              <TableCell sx={{ fontWeight: 'bold', backgroundColor:'#814f8bff'}}>Data</TableCell>
+                              <TableCell sx={{ fontWeight: 'bold', backgroundColor:'#814f8bff'}}>Valor</TableCell>
+                              <TableCell sx={{ fontWeight: 'bold', backgroundColor:'#814f8bff'}} >Acoes</TableCell>
+                            </TableRow>
+                          </TableHead>
+
+                          <TableBody>
+                            {transacoes.map((item) => (
+                              <TableRow key={item.id}>
+                                <TableCell >{item.nome}</TableCell>
+                                <TableCell>{item.categoria}</TableCell>
+                                <TableCell>{item.membro}</TableCell>
+                                <TableCell>{format(item.data,"dd/MM/yyyy")}</TableCell>
+                                <TableCell>{formatarMoeda(item.valor)}</TableCell>
+                                <TableCell>{
+                                  <Box display={"flex"}>
+                                    <IconButton size="small" >
+                                      <EditIcon/>
+                                    </IconButton> 
+                                    <IconButton size="small" >
+                                    
+                                      <DeleteIcon/>
+                                    </IconButton> 
+                                    
+                                  </Box>
+                                  
+
+                                  
+                                  
+                                  }</TableCell>
+                              </TableRow>
+                            ))}
+                            
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+
+                  </div>
+
+
+
+
+                </Box>
+
+
+
+              )}
+            </Box>
+          </Box>
+        </div>
+      </div>
+    </div>
+    
+  );
 }

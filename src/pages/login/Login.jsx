@@ -2,6 +2,7 @@
 import {Link, useNavigate} from "react-router-dom"
 import { useState } from "react";
 import api from "../../services/api";
+import { TextField, Button, CircularProgress } from "@mui/material";
 import './style.css'
 
 function Login() {
@@ -34,21 +35,40 @@ function Login() {
     <div className="container">
       <form className="formularios" onSubmit={handleLogin} >
         <h1>Fynger</h1>
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
+        <TextField fullWidth
+            margin="normal"
+            label= "E-mail"
+            type="email"
+            value={email}
+            onChange={(e)=> setEmail(e.target.value)}
+            variant="outlined"
+           
+            size="small"
+            />
+
+         
+
+            <TextField fullWidth
+            margin="normal"
+            type= "password"
+            label="Senha"
+            value={senha}
+            onChange={(e)=> setSenha(e.target.value)}
+            variant="outlined"
+           
+            size="small"
+            />
+
+
+         <Button
+                
+                variant="contained"
+                
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={22} color="inherit" /> : "Entrar"}
+          </Button>
         {erro && <p className="erro">{erro}</p>}
          <Link to="/Cadastro">Cadastre-se </Link>
          <Link to ="/Cadastro"> esqueci minha senha</Link>

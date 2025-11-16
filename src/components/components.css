@@ -1,5 +1,6 @@
 /* CARD DE MEMBROS*/
 
+
 .principal{
     border: solid 2px;
     color: black;
@@ -55,18 +56,21 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
+    
 
 }  
 
 
 .scroll-area {
-  padding: 20px;
+  padding: 10px;
   overflow-y: hidden; /* 👈 começa sem scroll visível */
   max-height: calc(90vh - 40px);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   transition: overflow 0.3s ease;
+  
+  
 }
 
 /* quando o mouse passa em cima do modal, ativa o scroll */
@@ -85,18 +89,26 @@
 }
 .form-trans{
     overflow: hidden;
-    width: 600px;
+    max-width:600px;
     max-height:90vh;
     align-items: center;
     display: flex;
     flex-direction: column;
     border-radius: 15px;
-    padding: 20px;
-    background-color: aliceblue;
+    padding: 5px;
+    background-color: #fff;
     color: blueviolet;
     gap: 20px;
     
+    box-sizing: border-box;
+    & input {
+      background-color: #ffffff7c;
+    }
    
+}
+.box-tabela{
+  width: 99%;
+  padding: 1px;
 }
 
 
@@ -110,3 +122,57 @@
 }
 
 
+.pill-categoria{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  border: solid 1px;
+  width: fit-content;
+
+  padding-left: 10px;
+  border-radius: 50px;
+}
+
+.pill-categoria:hover{
+  background-color: #b7b7b752;
+  cursor: pointer
+}
+
+.foto-perfil{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  & label{
+    border: solid 1px;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  & label:hover{
+    background-color: rgba(137, 43, 226, 0.212);
+  }
+}
+
+
+
+
+@media (max-width: 768px) {
+  
+  .box-tabela{
+  width: 90vw;
+  padding: 1px;
+  }
+
+  .overlay{
+    padding: 2px;
+  }
+
+  .form-trans{
+    height: 100%;
+  }
+
+
+
+}
