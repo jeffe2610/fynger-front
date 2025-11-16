@@ -542,10 +542,12 @@ const SubmitButton = styled(Button)({
 })
 
 export function ModalConfig({onClose}) {
+  const [error, setError] = useState("")
+  const [loading,setLoading] = useState(false)
   const [tabValue, setTabValue] = useState(0);
   const [nome, setNome] = useState()
   const [email, setEmail] = useState('')
-  const [tel, setTel] = useState('')
+  const [telefone, setTelefone] = useState('')
   const [senha, setSenha] = useState('')
   const [novaSenha, setNovaSenha] = useState('')
   const [nomeGrupo, setNomeGrupo] = useState('')
@@ -566,7 +568,7 @@ export function ModalConfig({onClose}) {
         if(res.data){
           setNome(res.data.nome)
           setEmail(res.data.email)
-          setTel(res.data.telefone)
+          setTelefone(res.data.telefone)
           setNomeGrupo(res.data.nomeGrupo)
           setMembros(res.data.membros)
           setCategorias(res.data.categorias)
@@ -591,6 +593,23 @@ export function ModalConfig({onClose}) {
     fetchTransacoes();
   },[])
   
+
+  async function handleupdate(e) {
+       setLoading(true)
+       e.preventDefault();
+       setError("");
+   
+       try{
+         const Res = await api.put("/atualizar-perfil ",{nome, email, telefone, senha, novaSenha });
+         alert("atualizado com sucesso")
+       }catch(error){
+         setError(error.response?.data?.error || "erro ao registrar atualização");
+       }finally{
+         setLoading(false)
+        
+       }
+        
+     }
   
   
   
@@ -630,7 +649,7 @@ export function ModalConfig({onClose}) {
                 
                   <Box border={"solid 1px grey"} borderRadius={5} padding={2}>
                     
-                      <form>
+                      <form onSubmit={handleupdate}>
                         <h3>informaçoes pessoais</h3>
                         <p>atualize suas informações pessoais</p>
                         <div className="foto-perfil" id= "inputFoto">
@@ -659,8 +678,8 @@ export function ModalConfig({onClose}) {
                         variant="outlined"
                         size="small"
                         type="tel"
-                        value={tel}
-                        onChange={(e)=>setTel(e.target.value)}/>
+                        value={telefone}
+                        onChange={(e)=>setTelefone(e.target.value)}/>
 
                         <hr />
 
@@ -680,7 +699,9 @@ export function ModalConfig({onClose}) {
                         value={novaSenha}
                         onChange={(e)=>setNovaSenha(e.target.value)}/>
 
-                        <SubmitButton>Salvar Alterações</SubmitButton>
+                        <SubmitButton type="submit">{loading ? <CircularProgress size={22} color="inherit" /> : "Salvar Atualização"}</SubmitButton>
+
+                        {error && <p style={{ color: "red" }}>{error}</p>}
 
                       </form>
                     
