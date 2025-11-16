@@ -167,7 +167,8 @@
 
   .overlay{
     padding: 0;
-    align-items: start;
+    align-items: center;
+    justify-content: center;
     background-color: #fff;
   }
 
