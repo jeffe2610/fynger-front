@@ -144,7 +144,8 @@ scale: 1.02;
     bottom: 0;
     left: 0;
     width: 100vw;
-    z-index: 1000;
+    z-index: 2000;
+    height: 70px;
     & hr {
       height: 70%;
       align-self: center;
@@ -163,7 +164,7 @@ scale: 1.02;
   .container-center {
     padding: 20px;
     font-size: smaller;
-    
+    margin-bottom: 45px;
   }
 
   .dashboard-cards{

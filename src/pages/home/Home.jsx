@@ -72,7 +72,7 @@ function Home() {
   const [userName, setUserName] = useState("");
   const [transacoes, setTransacoes]= useState([]);
   const[categorias, setCategorias] = useState([])
-  const[selecao, setSelecao] = useState("")
+  const[selecao, setSelecao] = useState("inicio")
   const agora = new Date();
   const mesAtual = format(agora,"MM-yyyy")
   const mesAnterior = format(subMonths(agora,1),"MM-yyyy")
@@ -86,6 +86,11 @@ function Home() {
 
       const handleChange = (event, newValue) => {
         setSelecao(newValue);
+
+        if(newValue === "ajustes"){setShowModalConfig(true),setShowModal(false)}
+        if(newValue === "novaTransacao"){setShowModal(true), setShowModalConfig(false)}
+        if(newValue === "inicio"){navigate("/Home"),setShowModal(false), setShowModalConfig(false)}
+        if(newValue === "sair"){handleLogout}
       };
     
     useEffect(() => {
@@ -161,9 +166,9 @@ function Home() {
         
         <BottomNavigation id= "menu-but" value={selecao} onChange={handleChange}
         sx={{backgroundColor:"transparent"}}>
-          <BottomNavigationAction label="Inicio" value={'inicio'} icon={<HomeIcon/>}  onChange={handleChange} onClick={()=>{navigate('/home')}}/> <hr />
-          <BottomNavigationAction label="Transações"  value={ 'novaTransacao'}icon={<CurrencyExchangeIcon/>} onClick={()=>{setShowModal(true)}} /> <hr />
-          <BottomNavigationAction label="Ajustes" value={'ajustes'} icon={<SettingsIcon/>} onClick={()=>{setShowModalConfig(true)}}/> <hr />
+          <BottomNavigationAction label="Inicio" value={'inicio'} icon={<HomeIcon/>}  onChange={handleChange}/*  onClick={()=>{navigate('/Home')}} *//> <hr />
+          <BottomNavigationAction label="Transações"  value={ 'novaTransacao'}icon={<CurrencyExchangeIcon/>} /* onClick={()=>{setShowModal(true)}}  *//> <hr />
+          <BottomNavigationAction label="Ajustes" value={'ajustes'} icon={<SettingsIcon/>} /* onClick={()=>{setShowModalConfig(true)}} *//> <hr />
           <BottomNavigationAction label="Sair" value={'sair'} icon={<ExitToAppIcon/>}  onClick={handleLogout} sx={{color:"red"}}/> hr
         </BottomNavigation>
       </menu>
