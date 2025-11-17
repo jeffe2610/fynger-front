@@ -166,7 +166,7 @@ function Home() {
         
         <BottomNavigation id= "menu-but" value={selecao} onChange={handleChange}
         sx={{backgroundColor:"transparent"}}>
-          <BottomNavigationAction label="Inicio" value={'inicio'} icon={<HomeIcon/>}  onChange={handleChange}/*  onClick={()=>{navigate('/Home')}} *//> <hr />
+          <BottomNavigationAction label="Inicio" value={'inicio'} icon={<HomeIcon/>} /*  onClick={()=>{navigate('/Home')}} *//> <hr />
           <BottomNavigationAction label="Transações"  value={ 'novaTransacao'}icon={<CurrencyExchangeIcon/>} /* onClick={()=>{setShowModal(true)}}  *//> <hr />
           <BottomNavigationAction label="Ajustes" value={'ajustes'} icon={<SettingsIcon/>} /* onClick={()=>{setShowModalConfig(true)}} *//> <hr />
           <BottomNavigationAction label="Sair" value={'sair'} icon={<ExitToAppIcon/>}  onClick={handleLogout} sx={{color:"red"}}/> hr

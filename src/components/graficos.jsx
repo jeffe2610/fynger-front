@@ -557,6 +557,8 @@ export function ModalConfig({onClose}) {
   const [membros, setMembros] = useState()
   const [nomeCategoria, setNomeCategoria] = useState('')
   const [transacoes, setTransacoes] =useState('')
+  const [ avatar, setAvatar] = useState('')
+ 
   const handleChange = (event, newValue) => {
       setTabValue(newValue);
     };
@@ -572,7 +574,7 @@ export function ModalConfig({onClose}) {
           setNomeGrupo(res.data.nomeGrupo)
           setMembros(res.data.membros)
           setCategorias(res.data.categorias)
-          
+          setAvatar(res.data.avatar)
         }
       } catch (error) {
         console.log(error)
@@ -594,7 +596,7 @@ export function ModalConfig({onClose}) {
   },[])
   
 
-  async function handleupdate(e) {
+  async function handleupdatePerfil(e) {
        setLoading(true)
        e.preventDefault();
        setError("");
@@ -611,8 +613,37 @@ export function ModalConfig({onClose}) {
         
      }
   
-  
-  
+  async function handleupdateAvatar(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("avatar", file); // 🔥 NOME TEM QUE SER IGUAL AO DO multer.single()
+
+  try {
+    const Res = await api.put('/atualiza-avatar', formData );
+  } catch (error) {
+    console.log(error);
+  }
+    }
+ 
+  async function handleupdategrupo(e) {
+    setLoading(true)
+    e.preventDefault()
+    setError("")
+    try {
+      const res = await api.put("/atualizar-grupo", {nomeGrupo})
+      if(res.data){console.log(res.data)}
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      setLoading(false)
+      console.log(nomeGrupo)
+    }
+  }
+
+
   return (
     
     <div className="overlay">
@@ -649,16 +680,19 @@ export function ModalConfig({onClose}) {
                 
                   <Box border={"solid 1px grey"} borderRadius={5} padding={2}>
                     
-                      <form onSubmit={handleupdate}>
+                      <form onSubmit={handleupdatePerfil}>
                         <h3>informaçoes pessoais</h3>
                         <p>atualize suas informações pessoais</p>
                         <div className="foto-perfil" id= "inputFoto">
-                          <Avatar sx={{width:"100px", height:"100px"}}/>
-                          <input type="file" name="foto" id="foto" style={{display:"none"}} />
-                          <label for="foto"className="botao-upload">Alterar foto</label>
+                          <Avatar src={ `${avatar}?t=${Date.now()}`} sx={{width:"100px", height:"100px"}}/>
+                          <input type="file" accept="image/*" name="avatar" id="foto" style={{display:"none"}} onChange={handleupdateAvatar}/>
+                          <label htmlFor="foto" className="botao-upload">Alterar foto</label>
+
                         </div>
+                        
+                        
                         <TextField fullWidth margin="normal"
-                        label="Nome completo"
+                        label="Nome"
                         variant="outlined"
                         size="small"
                         type="text"
@@ -671,7 +705,8 @@ export function ModalConfig({onClose}) {
                         onChange={(e)=>setEmail(e.target.value)}
                         variant="outlined"
                         size="small"
-                        type="email"/>
+                        type="email"
+                        disabled/>
 
                         <TextField fullWidth margin="normal"
                         label="Telefone"
@@ -697,6 +732,7 @@ export function ModalConfig({onClose}) {
                         size="small"
                         type="password"
                         value={novaSenha}
+                        disabled={!senha}
                         onChange={(e)=>setNovaSenha(e.target.value)}/>
 
                         <SubmitButton type="submit">{loading ? <CircularProgress size={22} color="inherit" /> : "Salvar Atualização"}</SubmitButton>
@@ -734,7 +770,7 @@ export function ModalConfig({onClose}) {
                     value={descGrupo}
                     onChange={(e)=>setDescGrupo(e.target.value)}/>
 
-                    <SubmitButton> Salvar Alterações</SubmitButton>
+                     <SubmitButton  onClick={handleupdategrupo}>{loading ? <CircularProgress size={22} color="inherit" /> : "Salvar Atualização"}</SubmitButton>
                   </Box>
                   <Box border={"solid 1px grey"} borderRadius={5} padding={2} marginBottom={2}>
                     <h3>Membros do grupo</h3>
