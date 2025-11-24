@@ -77,6 +77,7 @@ function Home() {
   const mesAtual = format(agora,"MM-yyyy")
   const mesAnterior = format(subMonths(agora,1),"MM-yyyy")
   const [meses, setMeses] = useState([])
+  const [ avatar, setAvatar] = useState("")
   const navigate = useNavigate()
     
     async function handleLogout() {
@@ -99,7 +100,8 @@ function Home() {
           const res = await api.get("/session");
           if (res.data) {
             setUserName(res.data.nome);
-            console.log("aqui o seession",res.data.nome)
+            setAvatar(res.data.avatar)
+            
           }
         } catch (error) {
           console.error("Erro ao buscar sessão:", error);
@@ -156,7 +158,7 @@ function Home() {
       <menu className="menu">
         
         <div className="informacoes" >
-          <Avatar sx={{width:"50px",height:"50px"}} id="avatare">H</Avatar>  
+          <Avatar src={ `${avatar}?t=${Date.now()}`} sx={{width:"50px",height:"50px"}} id="avatare" /> 
           <div className="info-grupo">
             <span>Bem Vindo,{<h2>{userName}</h2>}</span> 
             <h5>nome do grupo - mes</h5>
