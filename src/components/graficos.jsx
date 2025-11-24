@@ -563,6 +563,7 @@ const SubmitButton = styled(Button)({
 export function ModalConfig({ onClose }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
   const [tabValue, setTabValue] = useState(0);
   const [nome, setNome] = useState();
   const [email, setEmail] = useState("");
@@ -700,8 +701,8 @@ export function ModalConfig({ onClose }) {
     }
   }
 
-  async function del_categoria(id) {
-    setLoading(true);
+  async function DeleteCategoria(id) {
+    setLoadingId(id);
     setError("");
     try {
       await api.delete("/del-categoria", {
@@ -711,10 +712,32 @@ export function ModalConfig({ onClose }) {
     } catch (error) {
       setError(error.response?.data?.error || "erro ao deletar");
     } finally {
-      setLoading(false);
+      setLoadingId(null);
     }
     if (error) {
       showSnack(error, "error");
+    }
+  }
+
+
+
+  async function DeleteTransacao(id) {
+    setLoadingId(id)
+    setError("")
+    
+    try {
+      await api.delete("/del-transacao",{
+        data: {id}
+      })
+      showSnack("Transação Deletada!", "success")
+    } catch (error) {
+      setError(error.response?.data?.error || "Erro ao deletar")
+    }finally{
+      setLoadingId(null)
+    }
+    
+    if (error) {
+      showSnack(error, "error")
     }
   }
   return (
@@ -987,12 +1010,12 @@ export function ModalConfig({ onClose }) {
                           }}
                           disabled={!tipoCategoria}
                         >
-                          {" "}
-                          {loading ? (
+                          
+                          {loading ? 
                             <CircularProgress size={22} color="inherit" />
-                          ) : (
+                          : 
                             "Add"
-                          )}{" "}
+                          }
                         </Button>
                       </Box>
                     </form>
@@ -1018,10 +1041,12 @@ export function ModalConfig({ onClose }) {
                               <IconButton
                                 size="small"
                                 onClick={() => {
-                                  del_categoria(item.id);
+                                  DeleteCategoria(item.id);
                                 }}
                               >
-                                <DeleteIcon />
+                               {loadingId=== item.id ?
+                                 <CircularProgress size={22} color="inherit" /> :
+                                  <DeleteIcon /> }
                               </IconButton>
                             </Box>
                           )
@@ -1050,10 +1075,12 @@ export function ModalConfig({ onClose }) {
                               <IconButton
                                 size="small"
                                 onClick={() => {
-                                  del_categoria(item.id);
+                                  DeleteCategoria(item.id);
                                 }}
                               >
-                                <DeleteIcon />
+                                {loadingId=== item.id ?
+                                 <CircularProgress size={22} color="inherit" /> :
+                                  <DeleteIcon /> }
                               </IconButton>
                             </Box>
                           )
@@ -1163,8 +1190,12 @@ export function ModalConfig({ onClose }) {
                                       <IconButton size="small">
                                         <EditIcon />
                                       </IconButton>
-                                      <IconButton size="small">
-                                        <DeleteIcon />
+                                      <IconButton size="small" onClick={()=>{DeleteTransacao(item.id)}}>
+                                       
+                                         {loadingId=== item.id ?
+                                          <CircularProgress size={22} color="inherit" /> :
+                                          <DeleteIcon /> }
+                                        
                                       </IconButton>
                                     </Box>
                                   }

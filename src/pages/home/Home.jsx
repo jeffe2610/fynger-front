@@ -152,7 +152,7 @@ function Home() {
   
   const atual = meses.find((m)=> m.mes === mesAtual) || 0
   const anterior = meses.find((m)=> m.mes === mesAnterior) ||0
-  console.log(atual)
+
     return (
     <div className="container1">
       <menu className="menu">
