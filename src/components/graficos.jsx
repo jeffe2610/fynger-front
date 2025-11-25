@@ -38,6 +38,12 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
+  
 } from "@mui/material";
 import "./components.css";
 
@@ -52,6 +58,18 @@ import EditIcon from "@mui/icons-material/Edit";
 // Paleta de cores
 const COLORS = ["#3b234a", "#9dd3df", "#c9d1d3", "#3b3737", "#f7f7f7"];
 // utils/formatarMoeda.js
+
+
+
+
+
+
+
+
+
+
+
+
 
 export function GraficoPizza({ dados, titulo }) {
   return (
@@ -560,6 +578,33 @@ const SubmitButton = styled(Button)({
   },
 });
 
+export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>{titulo}</DialogTitle>
+
+      <DialogContent>
+        <DialogContentText>{mensagem}</DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => {
+            onConfirm(); // executa a função passada
+            onClose();   // fecha o dialog
+          }}
+        >
+          Confirmar
+        </Button>
+
+        <Button onClick={onClose} autoFocus>
+          Cancelar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 export function ModalConfig({ onClose }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -579,8 +624,11 @@ export function ModalConfig({ onClose }) {
   const [transacoes, setTransacoes] = useState([]);
   const [avatar, setAvatar] = useState("");
   const [snackOpen, setSnackOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [openTrans, setOpenTrans] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [snackType, setSnackType] = useState("success"); // success | error
+  const [selectedId, setSelectedId] = useState(null);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -636,16 +684,20 @@ export function ModalConfig({ onClose }) {
         senha,
         novaSenha,
       });
-      showSnack("perfil Atualizada!", "success");
+      showSnack("perfil Atualizado!", "success");
     } catch (error) {
-      setError(error.response?.data?.error || "erro ao registrar atualização");
+      let localError = error.response?.data?.error || "erro ao registrar atualização";
+      showSnack(localError, "error");
     } finally {
       setLoading(false);
     }
-    if (error) {
-      showSnack(error, "error");
-    }
+    
   }
+
+  
+
+
+
 
   async function handleupdateAvatar(e) {
     setError("");
@@ -659,12 +711,10 @@ export function ModalConfig({ onClose }) {
       const Res = await api.put("/atualiza-avatar", formData);
       showSnack("Foto de perfil Atualizada!", "success");
     } catch (error) {
-      setError(error.response?.data?.error || "erro ao registrar atualização");
+      let localError = error.response?.data?.error || "erro ao registrar atualização";
+      showSnack(localError, "error");
     } finally {
       setLoading(false);
-    }
-    if (error) {
-      showSnack(error, "error");
     }
   }
 
@@ -676,15 +726,13 @@ export function ModalConfig({ onClose }) {
       const Res = await api.put("/atualizar-grupo", { nomeGrupo });
       showSnack("Grupo Atualizado!", "success");
     } catch (error) {
-      setError(error.response?.data?.error || "erro ao registrar atualização");
+      let localError = error.response?.data?.error || "erro ao registrar atualização";
+      showSnack(localError, "error");
     } finally {
       setLoading(false);
     }
-    if (error) {
-      showSnack(error, "error");
-    }
   }
-
+  
   async function handleAddcategoria() {
     setLoading(true);
     setError("");
@@ -692,31 +740,33 @@ export function ModalConfig({ onClose }) {
       await api.post("/add-categoria", { nomeCategoria, tipoCategoria });
       showSnack("Categoria adicionada!", "success");
     } catch (error) {
-      setError(error.response?.data?.error || "erro ao registrar categoria");
+      let localError = error.response?.data?.error || "erro ao registrar categoria";
+      showSnack(localError, "error");
+      
     } finally {
       setLoading(false);
     }
-    if (error) {
-      showSnack(error, "error");
-    }
   }
-
+  
   async function DeleteCategoria(id) {
+    
+    console.log(id)
     setLoadingId(id);
-    setError("");
+    
     try {
       await api.delete("/del-categoria", {
         data: { id },
       });
       showSnack("Categoria deletada com sucesso", "success");
     } catch (error) {
-      setError(error.response?.data?.error || "erro ao deletar");
+      let localError = error.message || "erro ao deletar";
+      showSnack(localError, "error");
+      console.log(localError)
     } finally {
       setLoadingId(null);
     }
-    if (error) {
-      showSnack(error, "error");
-    }
+    
+    
   }
 
 
@@ -731,15 +781,19 @@ export function ModalConfig({ onClose }) {
       })
       showSnack("Transação Deletada!", "success")
     } catch (error) {
-      setError(error.response?.data?.error || "Erro ao deletar")
+      let localError = error.response?.data?.error || "Erro ao deletar"
+      showSnack(localError, "error")
     }finally{
       setLoadingId(null)
     }
     
-    if (error) {
-      showSnack(error, "error")
-    }
+    
+    
   }
+
+
+
+
   return (
     <div className="overlay">
       <div className="form-trans">
@@ -1041,7 +1095,8 @@ export function ModalConfig({ onClose }) {
                               <IconButton
                                 size="small"
                                 onClick={() => {
-                                  DeleteCategoria(item.id);
+                                  setOpen(true)
+                                  setSelectedId(item.id);
                                 }}
                               >
                                {loadingId=== item.id ?
@@ -1053,7 +1108,13 @@ export function ModalConfig({ onClose }) {
                       )}
                     </Box>
                   </Box>
-
+                  <BoxDialog
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    titulo="Deseja deletar a categoria?"
+                    mensagem="Atenção! Todas as transações relacionadas também serão excluídas."
+                    onConfirm={() => DeleteCategoria(selectedId)}
+                  />    
                   <Box
                     border={"solid 1px grey"}
                     borderRadius={5}
@@ -1070,12 +1131,13 @@ export function ModalConfig({ onClose }) {
                       {categorias.map(
                         (item) =>
                           item.tipo === "receita" && (
-                            <Box className="pill-categoria">
+                            <Box  key={item.id} className="pill-categoria">
                               <p>{item.nome}</p>
                               <IconButton
                                 size="small"
                                 onClick={() => {
-                                  DeleteCategoria(item.id);
+                                  setOpen(true)
+                                  setSelectedId(item.id);
                                 }}
                               >
                                 {loadingId=== item.id ?
@@ -1087,6 +1149,16 @@ export function ModalConfig({ onClose }) {
                       )}
                     </Box>
                   </Box>
+                  <BoxDialog
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    titulo="Deseja deletar a categoria?"
+                    mensagem="Atenção! Todas as transações relacionadas também serão excluídas."
+                    onConfirm={() => DeleteCategoria(selectedId)}
+                  />
+
+
+
                 </Box>
               )}
 
@@ -1096,7 +1168,7 @@ export function ModalConfig({ onClose }) {
                   display={"flex"}
                   flexDirection={"column"}
                   alignItems={"center"}
-                >
+                  >
                   <div className="box-tabela">
                     <Box border={"solid 1px grey"} borderRadius={5} padding={1}>
                       <h3>Gerencie suas transações</h3>
@@ -1187,10 +1259,12 @@ export function ModalConfig({ onClose }) {
                                 <TableCell>
                                   {
                                     <Box display={"flex"}>
-                                      <IconButton size="small">
+                                      <IconButton size="small" >
                                         <EditIcon />
                                       </IconButton>
-                                      <IconButton size="small" onClick={()=>{DeleteTransacao(item.id)}}>
+                                      <IconButton size="small" onClick={()=>{
+                                        setSelectedId(item.id)
+                                        setOpenTrans(true)}}>
                                        
                                          {loadingId=== item.id ?
                                           <CircularProgress size={22} color="inherit" /> :
@@ -1207,7 +1281,19 @@ export function ModalConfig({ onClose }) {
                       </TableContainer>
                     </Box>
                   </div>
+                  <BoxDialog
+                    open={openTrans}
+                    onClose={() => setOpenTrans(false)}
+                    titulo="Deseja deletar a Transação?"
+                    mensagem="Atenção! Todas as informações serao excluídas permanentemente."
+                    onConfirm={() => DeleteTransacao(selectedId)}
+                  />
+
+                  
+                
                 </Box>
+
+                
               )}
             </Box>
           </Box>
@@ -1228,6 +1314,9 @@ export function ModalConfig({ onClose }) {
           {snackMessage}
         </Alert>
       </Snackbar>
+
+
+      
     </div>
   );
 }
