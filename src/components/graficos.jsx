@@ -66,12 +66,58 @@ const COLORS = ["#3b234a", "#9dd3df", "#c9d1d3", "#3b3737", "#f7f7f7"];
 
 
 
+export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>{titulo}</DialogTitle>
+
+      <DialogContent>
+        <DialogContentText>{mensagem}</DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => {
+            onConfirm(); // executa a função passada
+            onClose();   // fecha o dialog
+          }}
+        >
+          Confirmar
+        </Button>
+
+        <Button onClick={onClose} autoFocus>
+          Cancelar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export function BoxAlerta({open, duration, onClose, type, mensagem}){
+
+  return(
+    <Snackbar
+        open={open}
+        autoHideDuration={duration}
+        onClose={onClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={onClose}
+          severity={type}
+          sx={{ width: "100%" }}
+        >
+          {mensagem}
+        </Alert>
+      </Snackbar>
+  )
+} 
 
 
 
 
 
-export function GraficoPizza({ dados, titulo }) {
+export function GraficoPizza({ dados, titulo}) {
   return (
     <div
       style={{
@@ -114,7 +160,7 @@ export function GraficoPizza({ dados, titulo }) {
   );
 }
 
-export function GraficoLinha({ titulo }) {
+export function GraficoLinha({ titulo, reload }) {
   const [dados, setDados] = useState([]);
   useEffect(() => {
     async function fetch() {
@@ -128,7 +174,7 @@ export function GraficoLinha({ titulo }) {
       }
     }
     fetch();
-  }, []);
+  }, [reload]);
 
   return (
     <div
@@ -211,9 +257,12 @@ export function TabelaTransacoes({ dados }) {
             <TableRow key={item.id}>
               <TableCell>{item.nome}</TableCell>
               <TableCell>{item.categoria}</TableCell>
-              <TableCell>{item.membro}</TableCell>
+              <TableCell>{item.membro }</TableCell>
               <TableCell>{format(item.data, "dd/MM/yyyy")}</TableCell>
-              <TableCell>{formatarMoeda(item.valor)}</TableCell>
+             {item.tipo === "receita" ?
+               <TableCell sx={{color:"green", fontWeight:"bold"}}>{`+${formatarMoeda(item.valor)}`}</TableCell>
+                :  <TableCell sx={{color:"red", fontWeight:"bold"}}>{`-${formatarMoeda(item.valor)}`}</TableCell>
+                }
             </TableRow>
           ))}
         </TableBody>
@@ -222,7 +271,7 @@ export function TabelaTransacoes({ dados }) {
   );
 }
 
-export function CardUser() {
+export function CardUser(reload) {
   const [membros, setMembros] = useState([]);
 
   useEffect(() => {
@@ -237,13 +286,13 @@ export function CardUser() {
       }
     }
     fetchuser();
-  }, []);
+  }, [reload]);
 
   return membros.map((item) => (
     <div className="principal">
-      <Avatar id="avatar">
-        {item.avatart
-          ? item.avatart
+      <Avatar id="avatar"  src={ `${item.avatar}?t=${Date.now()}`} >
+        {item.avatar
+          ? ''
           : item.nome.split(" ")[0][0].toUpperCase() +
             item.nome.split(" ")[1][0].toUpperCase()}
       </Avatar>
@@ -260,8 +309,7 @@ export function CardUser() {
   ));
 }
 
-export function Modal({ onClose }) {
-  const [error, setError] = useState("");
+export function Modal({ onClose,reload, onUpdated }) {
   const [loading, setLoading] = useState(false);
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
@@ -273,7 +321,9 @@ export function Modal({ onClose }) {
   const [vencimento, setVencimento] = useState("");
   const [category, setCategory] = useState([]);
   const [categoriaselecionada, setCategoriaSelecionada] = useState("");
-
+  const[ open, setOpen]= useState(false)
+  const [ alertaMensagem, setAlertaMensagem] = useState("")
+  const [ alertaTipo, setAlertaTipo] = useState("")
   useEffect(() => {
     async function fetchCategorias() {
       try {
@@ -285,14 +335,13 @@ export function Modal({ onClose }) {
     }
 
     fetchCategorias();
-  }, []);
+  }, [reload]);
 
-  console.log(category);
+ 
+
   async function handleregister(e) {
     setLoading(true);
     e.preventDefault();
-    console.log(data, vencimento);
-    setError("");
 
     try {
       const Res = await api.post("/transacao", {
@@ -304,21 +353,34 @@ export function Modal({ onClose }) {
         data,
         vencimento,
       });
-      alert("Transação registrada com sucesso");
+      onUpdated()
+      setAlertaMensagem("Transação registrada com sucesso");
+      setAlertaTipo("success")
+      setOpen(true)
     } catch (error) {
-      setError(
-        error.response?.data?.error || "erro ao registrar transferencia"
-      );
+      
+      let localError = error.response?.data?.error || "Erro ao registrar Transação"
+      setAlertaMensagem(localError)
+      setAlertaTipo("error")
+      setOpen(true)
+      
+      
     } finally {
+      
       setLoading(false);
     }
+
+    
   }
+
+
 
   return (
     <div className="overlay">
       <div className="form-trans">
         <div className="scroll-area">
-          <form onSubmit={handleregister}>
+          
+          <form  onSubmit={handleregister}>
             <h3>Nova transferencia</h3>
             <FormControl fullWidth margin="normal">
               <FormLabel>tipo de Transação</FormLabel>
@@ -387,7 +449,7 @@ export function Modal({ onClose }) {
                 disabled={!tipo}
               >
                 <MenuItem value="">
-                  <em>Selecione</em>
+                  <em>Selecione (Adcione em categorias "Ajustes")</em>
                 </MenuItem>
                 {category
                   .filter((item) => item.tipo === tipo)
@@ -493,8 +555,16 @@ export function Modal({ onClose }) {
                 Voltar
               </Button>
             </div>
+            <BoxAlerta
+                open={open}
+                onClose={()=>setOpen(false)}
+                type={alertaTipo}
+                duration={5000}
+                mensagem={alertaMensagem}
+                />
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            
+            
           </form>
         </div>
       </div>
@@ -578,34 +648,9 @@ const SubmitButton = styled(Button)({
   },
 });
 
-export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
-  return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{titulo}</DialogTitle>
 
-      <DialogContent>
-        <DialogContentText>{mensagem}</DialogContentText>
-      </DialogContent>
+export function ModalConfig({ onClose,  reload, onUpdated }) {
 
-      <DialogActions>
-        <Button
-          onClick={() => {
-            onConfirm(); // executa a função passada
-            onClose();   // fecha o dialog
-          }}
-        >
-          Confirmar
-        </Button>
-
-        <Button onClick={onClose} autoFocus>
-          Cancelar
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-export function ModalConfig({ onClose }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
@@ -641,6 +686,7 @@ export function ModalConfig({ onClose }) {
   };
 
   useEffect(() => {
+    
     async function fetch() {
       try {
         const res = await api.get("/atualizar-dados");
@@ -669,7 +715,8 @@ export function ModalConfig({ onClose }) {
     }
     fetch();
     fetchTransacoes();
-  }, []);
+    
+  }, [reload]);
 
   async function handleupdatePerfil(e) {
     setLoading(true);
@@ -684,6 +731,7 @@ export function ModalConfig({ onClose }) {
         senha,
         novaSenha,
       });
+      onUpdated()
       showSnack("perfil Atualizado!", "success");
     } catch (error) {
       let localError = error.response?.data?.error || "erro ao registrar atualização";
@@ -710,6 +758,7 @@ export function ModalConfig({ onClose }) {
     try {
       const Res = await api.put("/atualiza-avatar", formData);
       showSnack("Foto de perfil Atualizada!", "success");
+      onUpdated()
     } catch (error) {
       let localError = error.response?.data?.error || "erro ao registrar atualização";
       showSnack(localError, "error");
@@ -725,6 +774,7 @@ export function ModalConfig({ onClose }) {
     try {
       const Res = await api.put("/atualizar-grupo", { nomeGrupo });
       showSnack("Grupo Atualizado!", "success");
+      onUpdated()
     } catch (error) {
       let localError = error.response?.data?.error || "erro ao registrar atualização";
       showSnack(localError, "error");
@@ -739,6 +789,7 @@ export function ModalConfig({ onClose }) {
     try {
       await api.post("/add-categoria", { nomeCategoria, tipoCategoria });
       showSnack("Categoria adicionada!", "success");
+      onUpdated()
     } catch (error) {
       let localError = error.response?.data?.error || "erro ao registrar categoria";
       showSnack(localError, "error");
@@ -750,13 +801,14 @@ export function ModalConfig({ onClose }) {
   
   async function DeleteCategoria(id) {
     
-    console.log(id)
+    
     setLoadingId(id);
     
     try {
       await api.delete("/del-categoria", {
         data: { id },
       });
+      onUpdated()
       showSnack("Categoria deletada com sucesso", "success");
     } catch (error) {
       let localError = error.message || "erro ao deletar";
@@ -779,6 +831,7 @@ export function ModalConfig({ onClose }) {
       await api.delete("/del-transacao",{
         data: {id}
       })
+      onUpdated()
       showSnack("Transação Deletada!", "success")
     } catch (error) {
       let localError = error.response?.data?.error || "Erro ao deletar"
@@ -983,7 +1036,7 @@ export function ModalConfig({ onClose }) {
                           gap={"10px"}
                           alignItems={"center"}
                         >
-                          <Avatar sx={{ width: "60px", height: "60px" }} />
+                          <Avatar  src={ `${item.avatar}?t=${Date.now()}`}sx={{ width: "60px", height: "60px" }} />
                           <Box>
                             <p>{item.nome}</p>
                             <h6>{item.email}</h6>
@@ -1062,7 +1115,7 @@ export function ModalConfig({ onClose }) {
                             height: "100%",
                             overflow: "hidden",
                           }}
-                          disabled={!tipoCategoria}
+                          disabled={!tipoCategoria || loading}
                         >
                           
                           {loading ? 
@@ -1259,9 +1312,7 @@ export function ModalConfig({ onClose }) {
                                 <TableCell>
                                   {
                                     <Box display={"flex"}>
-                                      <IconButton size="small" >
-                                        <EditIcon />
-                                      </IconButton>
+                                     
                                       <IconButton size="small" onClick={()=>{
                                         setSelectedId(item.id)
                                         setOpenTrans(true)}}>

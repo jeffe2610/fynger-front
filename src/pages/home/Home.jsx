@@ -78,6 +78,8 @@ function Home() {
   const mesAnterior = format(subMonths(agora,1),"MM-yyyy")
   const [meses, setMeses] = useState([])
   const [ avatar, setAvatar] = useState("")
+  const [nomeGrupo, setNomeGrupo] = useState("")
+  const [reload, setReload] = useState(false)
   const navigate = useNavigate()
     
     async function handleLogout() {
@@ -90,17 +92,19 @@ function Home() {
 
         if(newValue === "ajustes"){setShowModalConfig(true),setShowModal(false)}
         if(newValue === "novaTransacao"){setShowModal(true), setShowModalConfig(false)}
-        if(newValue === "inicio"){navigate("/Home"),setShowModal(false), setShowModalConfig(false)}
+        if(newValue === "inicio"){navigate("/Home"),setShowModal(false), setShowModalConfig(false), setReload(prev => !prev)}
         if(newValue === "sair"){handleLogout}
       };
     
     useEffect(() => {
+  
       async function buscarSessao() {
         try {
           const res = await api.get("/session");
           if (res.data) {
             setUserName(res.data.nome);
             setAvatar(res.data.avatar)
+            setNomeGrupo(res.data.nomeGrupo)
             
           }
         } catch (error) {
@@ -147,7 +151,7 @@ function Home() {
       buscarSessao();
       carregar()
       categorias()
-      }, []);
+      }, [reload]);
 
   
   const atual = meses.find((m)=> m.mes === mesAtual) || 0
@@ -158,10 +162,18 @@ function Home() {
       <menu className="menu">
         
         <div className="informacoes" >
-          <Avatar src={ `${avatar}?t=${Date.now()}`} sx={{width:"50px",height:"50px"}} id="avatare" /> 
+          <Avatar src={ `${avatar}?t=${Date.now()}`} sx={{width:"80px",height:"90px"}} id="avatare" /> 
           <div className="info-grupo">
             <span>Bem Vindo,{<h2>{userName}</h2>}</span> 
-            <h5>nome do grupo - mes</h5>
+            <h4>{nomeGrupo}</h4>
+              <span>
+                {new Date().toLocaleDateString("pt-BR", {
+                weekday: "long",
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+                })}
+              </span>
           </div>
 
         </div>
@@ -169,8 +181,8 @@ function Home() {
         <BottomNavigation id= "menu-but" value={selecao} onChange={handleChange}
         sx={{backgroundColor:"transparent"}}>
           <BottomNavigationAction label="Inicio" value={'inicio'} icon={<HomeIcon/>} /*  onClick={()=>{navigate('/Home')}} *//> <hr />
-          <BottomNavigationAction label="Transações"  value={ 'novaTransacao'}icon={<CurrencyExchangeIcon/>} /* onClick={()=>{setShowModal(true)}}  *//> <hr />
-          <BottomNavigationAction label="Ajustes" value={'ajustes'} icon={<SettingsIcon/>} /* onClick={()=>{setShowModalConfig(true)}} *//> <hr />
+          <BottomNavigationAction label="Transações"  value={ 'novaTransacao'}icon={<CurrencyExchangeIcon/>} /> <hr />
+          <BottomNavigationAction label="Ajustes" value={'ajustes'} icon={<SettingsIcon/>}/> <hr />
           <BottomNavigationAction label="Sair" value={'sair'} icon={<ExitToAppIcon/>}  onClick={handleLogout} sx={{color:"red"}}/> hr
         </BottomNavigation>
       </menu>
@@ -181,8 +193,8 @@ function Home() {
           
           
          
-         {showModal && (<Modal onClose={()=> setShowModal(false)} />)}
-         {showModalconfig && (<ModalConfig onClose={()=> setShowModalConfig(false)} />)}
+         {showModal && (<Modal onClose={()=> setShowModal(false)}  onUpdated={()=>setReload(prev => !prev)}/>)}
+         {showModalconfig && (<ModalConfig onClose={()=> setShowModalConfig(false)}  reload={reload}  onUpdated={()=>setReload(prev => !prev)}/>)}
           
         
       
@@ -205,13 +217,13 @@ function Home() {
           </div>
         </div>
         <div className="dashboard-cards">
-          <div className="cards-2"><GraficoLinha titulo = "Gastos por mes"/></div>
-          <div className="cards-2"><GraficoPizza dados ={categorias}  titulo="Gastos por Categoria"/> </div>
+          <div className="cards-2"><GraficoLinha titulo = "Gastos por Mês"  reload={reload}/></div>
+          <div className="cards-2"><GraficoPizza dados ={categorias}  titulo="Gastos por Categoria" /> </div>
         </div>
         <div className="dashboard-cards">
           <div className="cards-3" id="trans">
             <h1 style={{ color: "#3b234a", fontSize: "1.2rem" }}>{titulo}</h1>
-            <TabelaTransacoes dados={transacoes}/></div>
+            <TabelaTransacoes dados={transacoes} reload={reload}/></div>
           <div className="cards-3" id="membros">
             <h3 style={{ color: "#3b234a", fontSize: "1.2rem" }}>Membros do grupo</h3>
             <CardUser />
