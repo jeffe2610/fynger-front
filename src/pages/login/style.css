@@ -1,9 +1,10 @@
 .container{
     display: flex;
-    height: 100vh;
+    height: 100%;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    padding-top: 80px;
     flex-direction: column;
     & h1 {
         font-size: 42px;
@@ -30,9 +31,13 @@
         0 4px 30px rgba(0, 0, 0, 0.2),   /* sombra principal suave */
         0 0 20px rgba(0, 0, 0, 0.1);      /* espalhamento difuso nos 4 lados */
     align-items: center;
-   
 
-    & button{
+    
+    
+    
+}
+
+#submitButton{
         background-color: #542770ad;
         border-radius: 25px;
         width: 50%;
@@ -40,11 +45,5 @@
         cursor: pointer;
         color: #fff;
     }
-    
-    
-    
-}
-
-
 
 

@@ -2,6 +2,7 @@
 import {Link, useNavigate} from "react-router-dom"
 import { useState } from "react";
 import api from "../../services/api";
+import { BoxAlerta } from "../../components/graficos";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import './style.css'
 
@@ -9,12 +10,14 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
+  
+  const [ open,setOpen] = useState(false)
+  const [alertaMensagem,setAlertaMensagem] = useState("")
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
   async function handleLogin(e) {
     e.preventDefault();
-    setErro("");
+    
     setLoading(true);
 
     try {
@@ -25,7 +28,9 @@ function Login() {
       navigate("/Home")
       // futuramente: redirecionar para o painel
     } catch (err) {
-      setErro(err.response?.data?.error || "Falha ao fazer login");
+      let localError= err.response?.data?.error || "Falha ao fazer login";
+      setAlertaMensagem(localError)
+      setOpen(true)
     } finally {
       setLoading(false);
     }
@@ -61,17 +66,24 @@ function Login() {
 
 
          <Button
-                
                 variant="contained"
-                
+                id="submitButton"
                 type="submit"
                 disabled={loading}
               >
                 {loading ? <CircularProgress size={22} color="inherit" /> : "Entrar"}
           </Button>
-        {erro && <p className="erro">{erro}</p>}
-         <Link to="/Cadastro">Cadastre-se </Link>
-         <Link to ="/Cadastro"> esqueci minha senha</Link>
+        
+
+        <BoxAlerta
+          duration={5000}
+          mensagem={alertaMensagem}
+          type={"error"}
+          open= {open}
+          onClose={()=>setOpen(false)}/>
+
+         <Link  style={{textDecoration:"none", fontWeight:"bold"}} to="/Cadastro">Cadastre-se </Link>
+         <Link  style={{textDecoration:"none", fontWeight:"bold"}}  to ="/Cadastro"> esqueci minha senha</Link>
       </form>
     </div>
   );

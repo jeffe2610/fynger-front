@@ -131,8 +131,8 @@ export function GraficoPizza({ dados, titulo}) {
     >
       <h1 style={{ color: "#3b234a", fontSize: "1.2rem" }}>{titulo}</h1>
 
-      {/* Wrapper com altura fixa para o gráfico */}
       <div style={{ width: "100%", height: "250px" }}>
+      {!dados || dados.length === 0  && (<Box sx={{color:"grey", height:"100%",display:"flex", justifyContent:"center",alignItems:"center"}}><h2 >Sem Dados para exibir</h2></Box>)}
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -213,6 +213,7 @@ export function GraficoLinha({ titulo, reload }) {
 }
 
 export function TabelaTransacoes({ dados }) {
+
   return (
     <TableContainer
       sx={{
@@ -253,7 +254,10 @@ export function TabelaTransacoes({ dados }) {
         </TableHead>
 
         <TableBody>
-          {dados.map((item) => (
+          
+          { 
+            
+            dados.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.nome}</TableCell>
               <TableCell>{item.categoria}</TableCell>
@@ -267,6 +271,7 @@ export function TabelaTransacoes({ dados }) {
           ))}
         </TableBody>
       </Table>
+        {!dados || dados.length === 0  && (<Box sx={{color:"grey", height:"100%",display:"flex", justifyContent:"center",alignItems:"center", padding:"10%"}}><h2 >Sem Dados para exibir</h2></Box>)}
     </TableContainer>
   );
 }
@@ -381,7 +386,12 @@ export function Modal({ onClose,reload, onUpdated }) {
         <div className="scroll-area">
           
           <form  onSubmit={handleregister}>
+            <Box sx={{display:"flex", justifyContent:"space-between"}}>
             <h3>Nova transferencia</h3>
+            <IconButton size="small" onClick={onClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
             <FormControl fullWidth margin="normal">
               <FormLabel>tipo de Transação</FormLabel>
               <RadioGroup
@@ -529,18 +539,10 @@ export function Modal({ onClose,reload, onUpdated }) {
               InputLabelProps={{ shrink: true }}
               disabled={!tipo}
             />
-            {/* Botões */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "16px",
-                gap: "20px",
-              }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
+            
+              <SubmitButton
+                
+                
                 type="submit"
                 disabled={loading}
               >
@@ -549,12 +551,10 @@ export function Modal({ onClose,reload, onUpdated }) {
                 ) : (
                   "Registrar"
                 )}
-              </Button>
+              </SubmitButton>
 
-              <Button variant="outlined" color="secondary" onClick={onClose}>
-                Voltar
-              </Button>
-            </div>
+              
+            
             <BoxAlerta
                 open={open}
                 onClose={()=>setOpen(false)}

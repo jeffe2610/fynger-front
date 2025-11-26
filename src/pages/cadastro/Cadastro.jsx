@@ -1,10 +1,11 @@
 
 import { useState } from "react";
 import "../login/style.css"
-import { Link, useNavigate } from "react-router-dom"; 
+import {useNavigate } from "react-router-dom"; 
 import api from "../../services/api"; 
 import '../../components/components.css'
 import { FormControl, Radio, RadioGroup,FormControlLabel, TextField, FormLabel, CircularProgress, Button } from "@mui/material";
+import { BoxAlerta } from "../../components/graficos";
 
 
 function Cadastro() {
@@ -15,24 +16,28 @@ function Cadastro() {
   const [senha , setSenha] = useState("");
   const [csenha, setCsenha] = useState("");
   const [loading , setLoading] = useState(false);
-  const [erro , setErro] = useState("");
   const [tipo, setTipo] = useState("")
   const [codigo, setCodigo] = useState("")
   const navigate = useNavigate();
+  const[open,setOpen] = useState(false)
+  const[alertaMensagem, setAlertaMensagem] = useState("")
   
   async function handleSignup(e) {
     e.preventDefault();
-    setErro("");
     setLoading(true)
 
     
     try {
-      const res = await api.post("/signup",{email,password : senha, nome, tel} );
+      
+      const res = await api.post("/signup",tipo === "Membro"? {email,password : senha, nome, tel, grupoId: codigo} : {email,password : senha, nome, tel} );
       console.log("Usuário cadastrado:", res.data.user);
+      console.log("o res",res)
       alert("cadastro realizado com sucesso!");
       navigate("/");
     }catch(err){
-      setErro(err.response?.data?.error || "Falha ao cadastrar");
+      let localError= err.response?.data?.error || "Falha ao cadastrar";
+      setAlertaMensagem(localError)
+      setOpen(true)
     }finally{
       setLoading(false)
     }
@@ -71,9 +76,10 @@ function Cadastro() {
               variant="outlined"
               
               />
+              
             )}
 
-
+            
             <TextField fullWidth
             margin="normal"
             label= "Nome"
@@ -145,7 +151,12 @@ function Cadastro() {
             </div>
 
 
-            {erro && <p className="erro">{erro}</p>}
+            <BoxAlerta
+              open={open}
+              onClose={()=>setOpen(false)}
+              type={"error"}
+              duration={5000}
+              mensagem={alertaMensagem} />
             
           </form>
         </div>
