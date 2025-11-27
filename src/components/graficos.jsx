@@ -285,21 +285,23 @@ export function CardUser(reload) {
         const res = await api.get("/grupo");
         if (res.data) {
           setMembros(res.data);
+          
         }
       } catch (error) {
         console.log(error);
       }
     }
     fetchuser();
+    console.log(membros)
   }, [reload]);
 
   return membros.map((item) => (
     <div className="principal">
-      <Avatar id="avatar"  src={ `${item.avatar}?t=${Date.now()}`} >
+      <Avatar id="avatar"  src={ `${item.avatar}?t=${Date.now()}`|| " "} >
         {item.avatar
           ? ''
           : item.nome.split(" ")[0][0].toUpperCase() +
-            item.nome.split(" ")[1][0].toUpperCase()}
+            item.nome.split(" ")[1][0]?.toUpperCase() } 
       </Avatar>
       <div className="nome-gasto">
         <h3>{item.nome}</h3>
