@@ -2,7 +2,7 @@
 import {Link, useNavigate} from "react-router-dom"
 import { useState } from "react";
 import api from "../../services/api";
-import { BoxAlerta } from "../../components/graficos";
+import { BoxAlerta, SubmitButton } from "../../components/graficos";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import './style.css'
 
@@ -39,7 +39,8 @@ function Login() {
   return (
     <div className="container">
       <form className="formularios" onSubmit={handleLogin} >
-        <h1>Fynger</h1>
+        <img  src="\512x512.png" alt="Fynger.logo" height={"300px"} width={'300px'}/>
+        {/* <h1>Fynger</h1> */}
         <TextField fullWidth
             margin="normal"
             label= "E-mail"
@@ -65,14 +66,14 @@ function Login() {
             />
 
 
-         <Button
+         <SubmitButton
                 variant="contained"
-                id="submitButton"
+                
                 type="submit"
                 disabled={loading}
               >
                 {loading ? <CircularProgress size={22} color="inherit" /> : "Entrar"}
-          </Button>
+          </SubmitButton>
         
 
         <BoxAlerta

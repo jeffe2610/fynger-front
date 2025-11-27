@@ -1,11 +1,11 @@
 
 import { useState } from "react";
-import "../login/style.css"
+
 import {useNavigate } from "react-router-dom"; 
 import api from "../../services/api"; 
 import '../../components/components.css'
 import { FormControl, Radio, RadioGroup,FormControlLabel, TextField, FormLabel, CircularProgress, Button } from "@mui/material";
-import { BoxAlerta } from "../../components/graficos";
+import { BoxAlerta, SubmitButton } from "../../components/graficos";
 
 
 function Cadastro() {
@@ -147,16 +147,16 @@ function Cadastro() {
               title: "As senhas não correspondem"}}
             />
 
-            <div className="button">
+            <div className="button" style={{flexDirection:"column"}}>
 
-              <Button
+              <SubmitButton
               variant="contained"
               disabled={loading}
               type="submit"
               size="small"
               >
                 {loading ? <CircularProgress size={22} color="inherit"/> : "Registrar"}
-              </Button>
+              </SubmitButton>
 
               <Button 
               onClick={()=>navigate("/")}>Voltar para login</Button>

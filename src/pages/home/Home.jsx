@@ -128,7 +128,7 @@ function Home() {
       async function categorias() {
         
         try{
-          const res = await api.get('/gastos-categoria');
+          const res = await api.get('/transacoes-grafico');
           if(res.data)
             {setCategorias(res.data)}
 
@@ -218,7 +218,7 @@ function Home() {
         </div>
         <div className="dashboard-cards">
           <div className="cards-2"><GraficoLinha titulo = "Gastos por Mês"  reload={reload}/></div>
-          <div className="cards-2"><GraficoPizza dados ={categorias}  titulo="Gastos por Categoria" /> </div>
+          <div className="cards-2"><GraficoPizza dados ={categorias}  titulo="Gasto por Categoria" /> </div>
         </div>
         <div className="dashboard-cards">
           <div className="cards-3" id="trans">

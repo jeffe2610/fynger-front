@@ -146,12 +146,13 @@ export function GraficoPizza({ dados, titulo}) {
             >
               {dados.map((entry, index) => (
                 <Cell
+                
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
                 />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip  />
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -199,12 +200,17 @@ export function GraficoLinha({ titulo, reload }) {
             <Tooltip />
             <Legend />
             <Line
+              name="Despesas"
               type="monotone"
               dataKey="total_despesas"
               stroke="#922929fd"
               activeDot={{ r: 8 }}
             />
-            <Line type="monotone" dataKey="total_receitas" stroke="#2e5a34ff" />
+            <Line
+              name="Receitas" 
+              type="monotone"
+              dataKey="total_receitas"
+              stroke="#2e5a34ff" />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -362,6 +368,7 @@ export function Modal({ onClose,reload, onUpdated }) {
         parcelas,
         data,
         vencimento,
+        tipo,
       });
       onUpdated()
       setAlertaMensagem("Transação registrada com sucesso");
@@ -652,7 +659,7 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   },
 }));
 
-const SubmitButton = styled(Button)({
+export const SubmitButton = styled(Button)({
   backgroundColor: "black",
   color: "white",
   borderRadius: "10px",
@@ -1141,7 +1148,8 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                         >
                           
                           {loading ? 
-                            <CircularProgress size={22} color="info" />
+                            <CircularProgress size={22} color="info
+                            " />
                           : 
                             "+"
                           }
