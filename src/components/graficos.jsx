@@ -351,6 +351,9 @@ export function Modal({ onClose,reload, onUpdated }) {
     e.preventDefault();
 
     try {
+      if (!categoriaselecionada) return (setAlertaMensagem("selecione uma categoria"),
+      setAlertaTipo("error"),
+      setOpen(true))
       const Res = await api.post("/transacao", {
         nome,
         valor,
@@ -398,6 +401,7 @@ export function Modal({ onClose,reload, onUpdated }) {
               <FormLabel>tipo de Transação</FormLabel>
               <RadioGroup
                 row
+                
                 value={tipo}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -408,11 +412,13 @@ export function Modal({ onClose,reload, onUpdated }) {
                 }}
               >
                 <FormControlLabel
+                  
                   value="despesa"
                   control={<Radio />}
                   label="despesa"
                 />
                 <FormControlLabel
+                  required
                   value="receita"
                   control={<Radio />}
                   label="receita"
@@ -428,6 +434,7 @@ export function Modal({ onClose,reload, onUpdated }) {
               onChange={(e) => setNome(e.target.value)}
               variant="outlined"
               disabled={!tipo}
+              required
             />
 
             <TextField
@@ -439,6 +446,7 @@ export function Modal({ onClose,reload, onUpdated }) {
               onChange={(e) => setValor(e.target.value)}
               variant="outlined"
               disabled={!tipo}
+              required
             />
 
             <TextField
@@ -449,9 +457,10 @@ export function Modal({ onClose,reload, onUpdated }) {
               onChange={(e) => setDescricao(e.target.value)}
               variant="outlined"
               disabled={!tipo}
+              required
             />
 
-            <FormControl fullWidth margin="normal">
+            <FormControl  fullWidth margin="normal">
               <InputLabel id="categoria-label">Categorias</InputLabel>
               <Select
                 labelId="categoria-label"
@@ -459,9 +468,12 @@ export function Modal({ onClose,reload, onUpdated }) {
                 value={categoriaselecionada}
                 onChange={(e) => setCategoriaSelecionada(e.target.value)}
                 disabled={!tipo}
+                
+                
+                
               >
                 <MenuItem value="">
-                  <em>Selecione (Adcione em categorias "Ajustes")</em>
+                  <em>Selecione</em>
                 </MenuItem>
                 {category
                   .filter((item) => item.tipo === tipo)
@@ -471,9 +483,12 @@ export function Modal({ onClose,reload, onUpdated }) {
                     </MenuItem>
                   ))}
               </Select>
+              {category.length === 0 && <span>Crie categorias em ajustes para registrar transações</span>}
+              
               {tipo === "despesa" && (
+                
                 <>
-                  <FormLabel>Forma de pagamento</FormLabel>
+                  <FormLabel sx={{marginTop:"20px"}}>Forma de pagamento</FormLabel>
                   <RadioGroup
                     row
                     value={pagamento}
@@ -785,7 +800,8 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
     }
   }
   
-  async function handleAddcategoria() {
+  async function handleAddcategoria(e) {
+    e.preventDefault()
     setLoading(true);
     setError("");
     try {
@@ -1067,7 +1083,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                       Crie Categorias personalizadas para organizar suas
                       transacoes
                     </p>
-                    <form>
+                    <form onSubmit={handleAddcategoria}>
                       <Box
                         sx={{
                           display: "flex",
@@ -1078,6 +1094,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                       >
                         <TextField
                           margin="normal"
+                          required
                           label="Nome da categoria"
                           type="text"
                           size="small"
@@ -1087,6 +1104,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                         />
 
                         <FormControl
+                        required
                           sx={{ width: "150px" }}
                           margin="normal"
                           size="small"
@@ -1095,6 +1113,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                             Categorias
                           </InputLabel>
                           <Select
+                          required
                             labelId="categoria-label"
                             id="categorias"
                             value={tipoCategoria}
@@ -1109,21 +1128,22 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                         </FormControl>
 
                         <Button
-                          onClick={handleAddcategoria}
+                          type="submit"
                           sx={{
+                            marginTop:"7px",
                             backgroundColor: "black",
                             color: "#fff",
                             fontWeight: "bold",
                             height: "100%",
                             overflow: "hidden",
                           }}
-                          disabled={!tipoCategoria || loading}
+                          disabled={ loading}
                         >
                           
                           {loading ? 
-                            <CircularProgress size={22} color="inherit" />
+                            <CircularProgress size={22} color="info" />
                           : 
-                            "Add"
+                            "+"
                           }
                         </Button>
                       </Box>

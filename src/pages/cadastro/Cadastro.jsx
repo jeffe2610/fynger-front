@@ -16,7 +16,7 @@ function Cadastro() {
   const [senha , setSenha] = useState("");
   const [csenha, setCsenha] = useState("");
   const [loading , setLoading] = useState(false);
-  const [tipo, setTipo] = useState("")
+  const [tipo, setTipo] = useState(" ")
   const [codigo, setCodigo] = useState("")
   const navigate = useNavigate();
   const[open,setOpen] = useState(false)
@@ -53,15 +53,15 @@ function Cadastro() {
           <form  onSubmit={handleSignup}>
             <h3>Cadastro</h3>
             <FormControl fullWidth margin="normal" >
-              <FormLabel>Tipo de cadastro</FormLabel>
+              <FormLabel >Tipo de cadastro</FormLabel>
               <RadioGroup
               row
               value={tipo}
               
               onChange={(e)=> setTipo(e.target.value) }
               >
-                <FormControlLabel value="Membro" control={<Radio/>} label="Membro" />
-                <FormControlLabel value="Administrador" control={<Radio />} label="Administardor" />
+                <FormControlLabel  value="Membro" control={<Radio/>} label="Membro" />
+                <FormControlLabel required value="Administrador" control={<Radio />} label="Administardor" />
 
               </RadioGroup>
             </FormControl>
@@ -72,6 +72,7 @@ function Cadastro() {
               label= "codigo do grupo"
               type="text"
               value={codigo}
+              required
               onChange={(e)=> setCodigo(e.target.value)}
               variant="outlined"
               
@@ -81,14 +82,18 @@ function Cadastro() {
 
             
             <TextField fullWidth
-            margin="normal"
+            margin="normal" 
             label= "Nome"
             type="text"
             value={nome}
             onChange={(e)=> setNome(e.target.value)}
             variant="outlined"
-            disabled={!tipo}
+            
             size="small"
+            required
+            inputProps={{
+              pattern: "^[A-Za-zÀ-ÖØ-öø-ÿ]+(\\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)+$",
+              title: "Digite nome e sobrenome (ex: João Silva)"}}
             />
 
             <TextField fullWidth
@@ -98,8 +103,9 @@ function Cadastro() {
             value={email}
             onChange={(e)=> setEmail(e.target.value)}
             variant="outlined"
-            disabled={!tipo}
+           
             size="small"
+            required
             />
 
             <TextField fullWidth
@@ -109,8 +115,9 @@ function Cadastro() {
             value={tel}
             onChange={(e)=> setTel(e.target.value)}
             variant="outlined"
-            disabled={!tipo}
+            
             size="small"
+
             />
 
             <TextField fullWidth
@@ -120,8 +127,9 @@ function Cadastro() {
             value={senha}
             onChange={(e)=> setSenha(e.target.value)}
             variant="outlined"
-            disabled={!tipo}
+            
             size="small"
+            required
             />
 
             <TextField fullWidth
@@ -131,8 +139,12 @@ function Cadastro() {
             value={csenha}
             onChange={(e)=> setCsenha(e.target.value)}
             variant="outlined"
-            disabled={!tipo}
+            
             size="small"
+            required
+            inputProps={{
+              pattern: senha ? senha.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") : ".*",
+              title: "As senhas não correspondem"}}
             />
 
             <div className="button">
