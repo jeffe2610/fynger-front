@@ -11,7 +11,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   
-  const [ open,setOpen] = useState(false)
+  const [ open,setOpen] = useState(false) 
   const [alertaMensagem,setAlertaMensagem] = useState("")
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()

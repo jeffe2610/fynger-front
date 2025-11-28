@@ -405,7 +405,7 @@ export function Modal({ onClose,reload, onUpdated }) {
               </IconButton>
             </Box>
             <FormControl fullWidth margin="normal">
-              <FormLabel>tipo de Transação</FormLabel>
+              <FormLabel>Tipo de transação</FormLabel>
               <RadioGroup
                 row
                 
@@ -422,13 +422,13 @@ export function Modal({ onClose,reload, onUpdated }) {
                   
                   value="despesa"
                   control={<Radio />}
-                  label="despesa"
+                  label="Despesa"
                 />
                 <FormControlLabel
                   required
                   value="receita"
                   control={<Radio />}
-                  label="receita"
+                  label="Receita"
                 />
               </RadioGroup>
             </FormControl>
