@@ -32,7 +32,6 @@ import {
   CircularProgress,
   Tab,
   Tabs,
-  Typography,
   Box,
   styled,
   IconButton,
@@ -42,29 +41,70 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions
-  
+  DialogActions,
 } from "@mui/material";
 import "./components.css";
-
 import Avatar from "@mui/material/Avatar";
-import "./components.css";
 import api from "../services/api";
 import { format } from "date-fns";
 import { formatarMoeda } from "../utils/formatarMoeda";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from "@mui/icons-material/Edit";
+import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+
 // Paleta de cores
-const COLORS = ["#3b234a", "#9dd3df", "#c9d1d3", "#3b3737", "#f7f7f7"];
-// utils/formatarMoeda.js
+const COLORS = ["#2A8CFF", "#9dd3df", "#61DFF0", "#3b3737", "#4A5568"];
 
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  backgroundColor: "#CBD6E0",
+  borderRadius: "50px",
+  minHeight: 40,
+  marginTop: 40,
+  width: "100%",
+  overflowX: "hidden",
+  "& .MuiTabs-flexContainer": {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: theme.spacing(1),
+    padding: theme.spacing(0.5),
+  },
+  "& .MuiTabs-indicator": {
+    display: "none",
+  },
+}));
 
+const StyledTab = styled(Tab)(({ theme }) => ({
+  flex: 1,
+  minWidth: 0,
+  textTransform: "none",
+  minHeight: 36,
+  padding: "2px",
+  borderRadius: 50,
+  backgroundColor: "transparent",
+  color: theme.palette.text.primary,
+  "&.Mui-selected": {
+    backgroundColor: '#4A5568',
+    color: theme.palette.common.white,
+  },
+  "&:hover": {
+    backgroundColor: '#4a556894',
+  },
+}));
 
-
-
-
-
+export const SubmitButton = styled(Button)({
+  backgroundColor: '#4A5568',
+  color: "white",
+  borderRadius: "10px",
+  height: "40px",
+  width: "100%",
+  cursor: "pointer",
+  margin: "15px 0px 15px 0px",
+  "&:hover": {
+    backgroundColor: '#4a556877',
+  },
+});
 
 export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
   return (
@@ -76,48 +116,43 @@ export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
       </DialogContent>
 
       <DialogActions>
+        
+        {onConfirm && (
+
         <Button
           onClick={() => {
-            onConfirm(); // executa a função passada
-            onClose();   // fecha o dialog
+            onConfirm();
+            onClose();
           }}
         >
           Confirmar
         </Button>
+        )}
 
         <Button onClick={onClose} autoFocus>
-          Cancelar
+          voltar
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-export function BoxAlerta({open, duration, onClose, type, mensagem}){
-
-  return(
+export function BoxAlerta({ open, duration, onClose, type, mensagem }) {
+  return (
     <Snackbar
-        open={open}
-        autoHideDuration={duration}
-        onClose={onClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={onClose}
-          severity={type}
-          sx={{ width: "100%" }}
-        >
-          {mensagem}
-        </Alert>
-      </Snackbar>
-  )
-} 
+      open={open}
+      autoHideDuration={duration}
+      onClose={onClose}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <Alert onClose={onClose} severity={type} sx={{ width: "100%" }}>
+        {mensagem}
+      </Alert>
+    </Snackbar>
+  );
+}
 
-
-
-
-
-export function GraficoPizza({ dados, titulo}) {
+export function GraficoPizza({ dados, titulo }) {
   return (
     <div
       style={{
@@ -129,10 +164,23 @@ export function GraficoPizza({ dados, titulo}) {
         justifyContent: "center",
       }}
     >
-      <h1 style={{ color: "#3b234a", fontSize: "1.2rem" }}>{titulo}</h1>
+      <h1 style={{  fontSize: "1.2rem" }}>{titulo}</h1>
 
       <div style={{ width: "100%", height: "250px" }}>
-      {!dados || dados.length === 0  && (<Box sx={{color:"grey", height:"100%",display:"flex", justifyContent:"center",alignItems:"center"}}><h2 >Sem Dados para exibir</h2></Box>)}
+        {!dados ||
+          (dados.length === 0 && (
+            <Box
+              sx={{
+                color: "grey",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <h2>Sem Dados para exibir</h2>
+            </Box>
+          ))}
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -146,13 +194,12 @@ export function GraficoPizza({ dados, titulo}) {
             >
               {dados.map((entry, index) => (
                 <Cell
-                
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
                 />
               ))}
             </Pie>
-            <Tooltip  />
+            <Tooltip />
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -188,9 +235,8 @@ export function GraficoLinha({ titulo, reload }) {
         justifyContent: "center",
       }}
     >
-      <h1 style={{ color: "#3b234a", fontSize: "1.2rem" }}>{titulo}</h1>
+      <h1 style={{ fontSize: "1.2rem" }}>{titulo}</h1>
 
-      {/* Wrapper com altura fixa para o gráfico */}
       <div style={{ width: "100%", height: "250px", fontWeight: "bold" }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={dados} margin={{ bottom: 30, right: 40, left: 40 }}>
@@ -207,10 +253,11 @@ export function GraficoLinha({ titulo, reload }) {
               activeDot={{ r: 8 }}
             />
             <Line
-              name="Receitas" 
+              name="Receitas"
               type="monotone"
               dataKey="total_receitas"
-              stroke="#2e5a34ff" />
+              stroke="#2e5a34ff"
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -219,40 +266,39 @@ export function GraficoLinha({ titulo, reload }) {
 }
 
 export function TabelaTransacoes({ dados }) {
-
   return (
     <TableContainer
       sx={{
-        maxHeight: "400px", // limite de altura
-        overflowY: "auto", // rolagem vertical
-        borderRadius: 2, // bordas arredondadas
+        maxHeight: "400px",
+        overflowY: "auto",
+        borderRadius: 2,
       }}
     >
       <Table size="medium" stickyHeader>
         <TableHead sx={{ backgroundColor: "transparent" }}>
           <TableRow>
             <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#814f8bff" }}
+              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
             >
               Nome
             </TableCell>
             <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#814f8bff" }}
+              sx={{ fontWeight: "bold", backgroundColor:"#CBD6E0" }}
             >
               Categoria
             </TableCell>
             <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#814f8bff" }}
+              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
             >
               Membro
             </TableCell>
             <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#814f8bff" }}
+              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
             >
               Data
             </TableCell>
             <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#814f8bff" }}
+              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
             >
               Valor
             </TableCell>
@@ -260,24 +306,40 @@ export function TabelaTransacoes({ dados }) {
         </TableHead>
 
         <TableBody>
-          
-          { 
-            
-            dados.map((item) => (
+          {dados.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.nome}</TableCell>
               <TableCell>{item.categoria}</TableCell>
-              <TableCell>{item.membro }</TableCell>
+              <TableCell>{item.membro}</TableCell>
               <TableCell>{format(item.data, "dd/MM/yyyy")}</TableCell>
-             {item.tipo === "receita" ?
-               <TableCell sx={{color:"green", fontWeight:"bold"}}>{`+${formatarMoeda(item.valor)}`}</TableCell>
-                :  <TableCell sx={{color:"red", fontWeight:"bold"}}>{`-${formatarMoeda(item.valor)}`}</TableCell>
-                }
+              {item.tipo === "receita" ? (
+                <TableCell
+                  sx={{ color: "green", fontWeight: "bold" }}
+                >{`+${formatarMoeda(item.valor)}`}</TableCell>
+              ) : (
+                <TableCell
+                  sx={{ color: "red", fontWeight: "bold" }}
+                >{`-${formatarMoeda(item.valor)}`}</TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-        {!dados || dados.length === 0  && (<Box sx={{color:"grey", height:"100%",display:"flex", justifyContent:"center",alignItems:"center", padding:"10%"}}><h2 >Sem Dados para exibir</h2></Box>)}
+      {!dados ||
+        (dados.length === 0 && (
+          <Box
+            sx={{
+              color: "grey",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "10%",
+            }}
+          >
+            <h2>Sem Dados para exibir</h2>
+          </Box>
+        ))}
     </TableContainer>
   );
 }
@@ -291,23 +353,24 @@ export function CardUser(reload) {
         const res = await api.get("/grupo");
         if (res.data) {
           setMembros(res.data);
-          
         }
       } catch (error) {
         console.log(error);
       }
     }
     fetchuser();
-    console.log(membros)
   }, [reload]);
 
   return membros.map((item) => (
     <div className="principal">
-      <Avatar id="avatar"  src={ `${item.avatar}?t=${Date.now()}`|| " "} >
+      <Avatar
+        id="avatar"
+        src={item.avatar ? `${item.avatar}?t=${Date.now()}` : " "}
+      >
         {item.avatar
-          ? ''
+          ? ""
           : item.nome.split(" ")[0][0].toUpperCase() +
-            item.nome.split(" ")[1][0]?.toUpperCase() } 
+            item.nome.split(" ")[1][0]?.toUpperCase()}
       </Avatar>
       <div className="nome-gasto">
         <h3>{item.nome}</h3>
@@ -322,7 +385,7 @@ export function CardUser(reload) {
   ));
 }
 
-export function Modal({ onClose,reload, onUpdated }) {
+export function Modal({ onClose, reload, onUpdated }) {
   const [loading, setLoading] = useState(false);
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
@@ -334,9 +397,9 @@ export function Modal({ onClose,reload, onUpdated }) {
   const [vencimento, setVencimento] = useState("");
   const [category, setCategory] = useState([]);
   const [categoriaselecionada, setCategoriaSelecionada] = useState("");
-  const[ open, setOpen]= useState(false)
-  const [ alertaMensagem, setAlertaMensagem] = useState("")
-  const [ alertaTipo, setAlertaTipo] = useState("")
+  const [open, setOpen] = useState(false);
+  const [alertaMensagem, setAlertaMensagem] = useState("");
+  const [alertaTipo, setAlertaTipo] = useState("");
   useEffect(() => {
     async function fetchCategorias() {
       try {
@@ -350,16 +413,17 @@ export function Modal({ onClose,reload, onUpdated }) {
     fetchCategorias();
   }, [reload]);
 
- 
-
   async function handleregister(e) {
     setLoading(true);
     e.preventDefault();
 
     try {
-      if (!categoriaselecionada) return (setAlertaMensagem("selecione uma categoria"),
-      setAlertaTipo("error"),
-      setOpen(true))
+      if (!categoriaselecionada)
+        return (
+          setAlertaMensagem("selecione uma categoria"),
+          setAlertaTipo("error"),
+          setOpen(true)
+        );
       const Res = await api.post("/transacao", {
         nome,
         valor,
@@ -370,37 +434,29 @@ export function Modal({ onClose,reload, onUpdated }) {
         vencimento,
         tipo,
       });
-      onUpdated()
+      onUpdated();
       setAlertaMensagem("Transação registrada com sucesso");
-      setAlertaTipo("success")
-      setOpen(true)
+      setAlertaTipo("success");
+      setOpen(true);
     } catch (error) {
-      
-      let localError = error.response?.data?.error || "Erro ao registrar Transação"
-      setAlertaMensagem(localError)
-      setAlertaTipo("error")
-      setOpen(true)
-      
-      
+      let localError =
+        error.response?.data?.error || "Erro ao registrar Transação";
+      setAlertaMensagem(localError);
+      setAlertaTipo("error");
+      setOpen(true);
     } finally {
-      
       setLoading(false);
     }
-
-    
   }
-
-
 
   return (
     <div className="overlay">
       <div className="form-trans">
         <div className="scroll-area">
-          
-          <form  onSubmit={handleregister}>
-            <Box sx={{display:"flex", justifyContent:"space-between"}}>
-            <h3>Nova transferencia</h3>
-            <IconButton size="small" onClick={onClose}>
+          <form onSubmit={handleregister}>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <h3>Nova transferencia</h3>
+              <IconButton size="small" onClick={onClose}>
                 <CloseIcon />
               </IconButton>
             </Box>
@@ -408,7 +464,6 @@ export function Modal({ onClose,reload, onUpdated }) {
               <FormLabel>Tipo de transação</FormLabel>
               <RadioGroup
                 row
-                
                 value={tipo}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -419,7 +474,6 @@ export function Modal({ onClose,reload, onUpdated }) {
                 }}
               >
                 <FormControlLabel
-                  
                   value="despesa"
                   control={<Radio />}
                   label="Despesa"
@@ -467,7 +521,7 @@ export function Modal({ onClose,reload, onUpdated }) {
               required
             />
 
-            <FormControl  fullWidth margin="normal">
+            <FormControl fullWidth margin="normal">
               <InputLabel id="categoria-label">Categorias</InputLabel>
               <Select
                 labelId="categoria-label"
@@ -475,9 +529,6 @@ export function Modal({ onClose,reload, onUpdated }) {
                 value={categoriaselecionada}
                 onChange={(e) => setCategoriaSelecionada(e.target.value)}
                 disabled={!tipo}
-                
-                
-                
               >
                 <MenuItem value="">
                   <em>Selecione</em>
@@ -490,12 +541,17 @@ export function Modal({ onClose,reload, onUpdated }) {
                     </MenuItem>
                   ))}
               </Select>
-              {category.length === 0 && <span>Crie categorias em ajustes para registrar transações</span>}
-              
+              {category.length === 0 && (
+                <span>
+                  Crie categorias em ajustes para registrar transações
+                </span>
+              )}
+
               {tipo === "despesa" && (
-                
                 <>
-                  <FormLabel sx={{marginTop:"20px"}}>Forma de pagamento</FormLabel>
+                  <FormLabel sx={{ marginTop: "20px" }}>
+                    Forma de pagamento
+                  </FormLabel>
                   <RadioGroup
                     row
                     value={pagamento}
@@ -563,32 +619,22 @@ export function Modal({ onClose,reload, onUpdated }) {
               InputLabelProps={{ shrink: true }}
               disabled={!tipo}
             />
-            
-              <SubmitButton
-                
-                
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? (
-                  <CircularProgress size={22} color="inherit" />
-                ) : (
-                  "Registrar"
-                )}
-              </SubmitButton>
 
-              
-            
+            <SubmitButton  type="submit" disabled={loading}>
+              {loading ? (
+                <CircularProgress size={22} color="inherit" />
+              ) : (
+                "Registrar"
+              )}
+            </SubmitButton>
+
             <BoxAlerta
-                open={open}
-                onClose={()=>setOpen(false)}
-                type={alertaTipo}
-                duration={5000}
-                mensagem={alertaMensagem}
-                />
-
-            
-            
+              open={open}
+              onClose={() => setOpen(false)}
+              type={alertaTipo}
+              duration={5000}
+              mensagem={alertaMensagem}
+            />
           </form>
         </div>
       </div>
@@ -603,7 +649,7 @@ export function MiniCard({ titulo, valor = 0, valorAnterior = 0 }) {
   const positivo = diferenca > 0;
 
   return (
-    <>
+    <div>
       <span>{titulo}</span>
       <h2>{formatarMoeda(valor)}</h2>
 
@@ -619,63 +665,11 @@ export function MiniCard({ titulo, valor = 0, valorAnterior = 0 }) {
             } vs mês anterior`
           : "Sem comparação com mês anterior"}
       </p>
-    </>
+    </div>
   );
 }
 
-const StyledTabs = styled(Tabs)(({ theme }) => ({
-  backgroundColor: theme.palette.grey[100],
-  borderRadius: "50px",
-  minHeight: 40,
-  marginTop: 40,
-  width: "100%",
-  overflowX: "hidden",
-  "& .MuiTabs-flexContainer": {
-    display: "flex",
-    flexWrap: "wrap", // ⭐ Agora quebra e não empurra nada
-    gap: theme.spacing(1),
-    padding: theme.spacing(0.5),
-  },
-  "& .MuiTabs-indicator": {
-    display: "none",
-  },
-}));
-
-const StyledTab = styled(Tab)(({ theme }) => ({
-  flex: 1, // ⭐ Abas se expandem igualmente
-  minWidth: 0, // ⭐ Permite encolher sem quebrar layout
-  textTransform: "none",
-  minHeight: 36,
-  padding: "2px",
-  borderRadius: 50,
-  backgroundColor: "transparent",
-  color: theme.palette.text.primary,
-  "&.Mui-selected": {
-    backgroundColor: "black",
-    color: theme.palette.common.white,
-  },
-  "&:hover": {
-    backgroundColor: theme.palette.action.hover,
-  },
-}));
-
-export const SubmitButton = styled(Button)({
-  backgroundColor: "black",
-  color: "white",
-  borderRadius: "10px",
-  height: "40px",
-  width: "100%",
-  cursor: "pointer",
-  margin: "15px 0px 15px 0px",
-  "&:hover": {
-    backgroundColor: "#5a5555ff",
-  },
-});
-
-
-export function ModalConfig({ onClose,  reload, onUpdated }) {
-
-  const [error, setError] = useState("");
+export function ModalConfig({ onClose, reload, onUpdated }) {
   const [loading, setLoading] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
   const [tabValue, setTabValue] = useState(0);
@@ -692,25 +686,37 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
   const [nomeCategoria, setNomeCategoria] = useState("");
   const [transacoes, setTransacoes] = useState([]);
   const [avatar, setAvatar] = useState("");
-  const [snackOpen, setSnackOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const [openTrans, setOpenTrans] = useState(false);
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackType, setSnackType] = useState("success"); // success | error
   const [selectedId, setSelectedId] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [openGrupo, setOpenGrupo] = useState(false);
+  const [alertaMensagem, setAlertaMensagem] = useState("");
+  const [alertaTipo, setAlertaTipo] = useState("");
+  const [ grupoId, setGrupoId] = useState("")
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const showSnack = (msg, type = "success") => {
-    setSnackMessage(msg);
-    setSnackType(type);
-    setSnackOpen(true);
+  const showAlerta = (msg, type ) => {
+    setAlertaMensagem(msg);
+    setAlertaTipo(type);
+    console.log(type)
+    console.log(alertaTipo)
+    setOpenAlert(true);
   };
 
+  const copiar = async () => {
+    try {
+      await navigator.clipboard.writeText(grupoId);
+      showAlerta("Codigo copiado", 'success')
+    } catch (error) {
+      console.log(error)
+      showAlerta('Nao foi possivel Copiar o codigo', 'error')
+    }
+  };
   useEffect(() => {
-    
     async function fetch() {
       try {
         const res = await api.get("/atualizar-dados");
@@ -722,6 +728,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
           setMembros(res.data.membros);
           setCategorias(res.data.categorias);
           setAvatar(res.data.avatar);
+          setGrupoId(res.data.grupo_id)
         }
       } catch (error) {
         console.log(error);
@@ -739,13 +746,11 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
     }
     fetch();
     fetchTransacoes();
-    
   }, [reload]);
 
   async function handleupdatePerfil(e) {
     setLoading(true);
     e.preventDefault();
-    setError("");
 
     try {
       const Res = await api.put("/atualizar-perfil ", {
@@ -755,24 +760,19 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
         senha,
         novaSenha,
       });
-      onUpdated()
-      showSnack("perfil Atualizado!", "success");
+      onUpdated();
+      showAlerta("perfil Atualizado!", "success");
     } catch (error) {
-      let localError = error.response?.data?.error || "erro ao registrar atualização";
-      showSnack(localError, "error");
+      let localError =
+        error.response?.data?.error || "erro ao registrar atualização";
+      
+        showAlerta(localError, "error");
     } finally {
       setLoading(false);
     }
-    
   }
 
-  
-
-
-
-
   async function handleupdateAvatar(e) {
-    setError("");
     const file = e.target.files[0];
     if (!file) return;
 
@@ -781,11 +781,12 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
 
     try {
       const Res = await api.put("/atualiza-avatar", formData);
-      showSnack("Foto de perfil Atualizada!", "success");
-      onUpdated()
+      showAlerta("Foto de perfil Atualizada!", "success");
+      onUpdated();
     } catch (error) {
-      let localError = error.response?.data?.error || "erro ao registrar atualização";
-      showSnack(localError, "error");
+      let localError =
+        error.response?.data?.error || "erro ao registrar atualização";
+      showAlerta(localError, "error");
     } finally {
       setLoading(false);
     }
@@ -794,83 +795,71 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
   async function handleupdategrupo(e) {
     setLoading(true);
     e.preventDefault();
-    setError("");
+
     try {
       const Res = await api.put("/atualizar-grupo", { nomeGrupo });
-      showSnack("Grupo Atualizado!", "success");
-      onUpdated()
+      showAlerta("Grupo Atualizado!", "success");
+      onUpdated();
     } catch (error) {
-      let localError = error.response?.data?.error || "erro ao registrar atualização";
-      showSnack(localError, "error");
+      let localError =
+        error.response?.data?.error || "erro ao registrar atualização";
+      showAlerta(localError, "error");
     } finally {
       setLoading(false);
     }
   }
-  
+
   async function handleAddcategoria(e) {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
-    setError("");
+
     try {
       await api.post("/add-categoria", { nomeCategoria, tipoCategoria });
-      showSnack("Categoria adicionada!", "success");
-      onUpdated()
+      showAlerta("Categoria adicionada!", "success");
+      onUpdated();
     } catch (error) {
-      let localError = error.response?.data?.error || "erro ao registrar categoria";
-      showSnack(localError, "error");
-      
+      let localError =
+        error.response?.data?.error || "erro ao registrar categoria";
+      showAlerta(localError, "error");
     } finally {
       setLoading(false);
     }
   }
-  
+
   async function DeleteCategoria(id) {
-    
-    
     setLoadingId(id);
-    
+
     try {
       await api.delete("/del-categoria", {
         data: { id },
       });
-      onUpdated()
-      showSnack("Categoria deletada com sucesso", "success");
+      onUpdated();
+      showAlerta("Categoria deletada com sucesso", "success");
     } catch (error) {
       let localError = error.message || "erro ao deletar";
-      showSnack(localError, "error");
-      console.log(localError)
+      showAlerta(localError, "error");
+      console.log(localError);
     } finally {
       setLoadingId(null);
     }
-    
-    
   }
-
-
 
   async function DeleteTransacao(id) {
-    setLoadingId(id)
-    setError("")
-    
+    setLoadingId(id);
+
     try {
-      await api.delete("/del-transacao",{
-        data: {id}
-      })
-      onUpdated()
-      showSnack("Transação Deletada!", "success")
+      await api.delete("/del-transacao", {
+        data: { id },
+      });
+      onUpdated();
+      showAlerta("Transação Deletada!", "success");
     } catch (error) {
-      let localError = error.response?.data?.error || "Erro ao deletar"
-      showSnack(localError, "error")
-    }finally{
-      setLoadingId(null)
+      let localError = error.response?.data?.error || "Erro ao deletar";
+      showAlerta(localError, "error");
+    } finally {
+      setLoadingId(null);
     }
-    
-    
-    
   }
-
-
-
 
   return (
     <div className="overlay">
@@ -884,7 +873,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
               </IconButton>
             </Box>
             <span>Gerencie seu perfil, Grupo, Categorias e trasacoes. </span>
-            
+
             <StyledTabs
               value={tabValue}
               onChange={handleChange}
@@ -932,6 +921,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                         size="small"
                         type="text"
                         value={nome}
+        
                         onChange={(e) => setNome(e.target.value)}
                       />
 
@@ -990,8 +980,6 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                           "Salvar Atualização"
                         )}
                       </SubmitButton>
-
-                      {error && <p style={{ color: "red" }}>{error}</p>}
                     </form>
                   </Box>
                 </Box>
@@ -1061,7 +1049,10 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                           gap={"10px"}
                           alignItems={"center"}
                         >
-                          <Avatar  src={ `${item.avatar}?t=${Date.now()}`}sx={{ width: "60px", height: "60px" }} />
+                          <Avatar
+                            src={`${item.avatar}?t=${Date.now()}`}
+                            sx={{ width: "60px", height: "60px" }}
+                          />
                           <Box>
                             <p>{item.nome}</p>
                             <h6>{item.email}</h6>
@@ -1073,8 +1064,35 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                       </Box>
                     ))}
 
-                    <SubmitButton> Convidar Novo Membro</SubmitButton>
+                    <SubmitButton onClick={()=>setOpenGrupo(true)}> Convidar Novo Membro</SubmitButton>
                   </Box>
+
+                     <Dialog open={openGrupo} onClose={()=>setOpenGrupo(false)}>
+                        <DialogTitle>Codigo do grupo</DialogTitle>
+
+                        <DialogContent>
+                          <DialogContentText>Aqui está o código do seu grupo! <br/>
+                           Envie para os outros membros para que eles possam entrar. 
+                           <TextField fullWidth
+                           margin="normal"
+                           variant="filled"
+                           
+                           value={grupoId}
+                           label="codigo do grupo"
+                           size="small"
+                           />
+                           </DialogContentText>
+
+                        </DialogContent>
+                        <DialogActions>
+                          <IconButton size="large" onClick={copiar}> 
+                            <ContentCopyRoundedIcon/>
+                          </IconButton>
+                          <Button onClick={()=>setOpenGrupo(false)}>voltar</Button>
+                          
+                        </DialogActions>
+                      </Dialog>
+
                 </Box>
               )}
               {tabValue === 2 && (
@@ -1111,7 +1129,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                         />
 
                         <FormControl
-                        required
+                          required
                           sx={{ width: "150px" }}
                           margin="normal"
                           size="small"
@@ -1120,9 +1138,10 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                             Categorias
                           </InputLabel>
                           <Select
-                          required
+                            required
                             labelId="categoria-label"
                             id="categorias"
+                            sx={{backgroundColor:"#CBD6E0"}}
                             value={tipoCategoria}
                             onChange={(e) => setTipoCategoria(e.target.value)}
                           >
@@ -1134,26 +1153,29 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                           </Select>
                         </FormControl>
 
-                        <Button
-                          type="submit"
+                        <IconButton 
+                         type="submit"
                           sx={{
-                            marginTop:"7px",
-                            backgroundColor: "black",
+                            marginTop: "7px",
+                            backgroundColor: '#4A5568',
                             color: "#fff",
                             fontWeight: "bold",
                             height: "100%",
                             overflow: "hidden",
                           }}
-                          disabled={ loading}
-                        >
+                          disabled={loading}>
+                            {loading ? (
+                            <CircularProgress
+                              size={22}
+                              color="inherit
+                            "
+                            />
+                          ) : (
+                            <AddCircleOutlineIcon/>
+                          )}
                           
-                          {loading ? 
-                            <CircularProgress size={22} color="info
-                            " />
-                          : 
-                            "+"
-                          }
-                        </Button>
+                        </IconButton>
+                        
                       </Box>
                     </form>
                   </Box>
@@ -1173,18 +1195,21 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                       {categorias.map(
                         (item) =>
                           item.tipo === "despesa" && (
-                            <Box className="pill-categoria">
+                            <Box className="pill-categoria"  backgroundColor="#CBD6E0">
                               <p>{item.nome}</p>
                               <IconButton
                                 size="small"
+                                color="error"
                                 onClick={() => {
-                                  setOpen(true)
+                                  setOpen(true);
                                   setSelectedId(item.id);
                                 }}
                               >
-                               {loadingId=== item.id ?
-                                 <CircularProgress size={22} color="inherit" /> :
-                                  <DeleteIcon /> }
+                                {loadingId === item.id ? (
+                                  <CircularProgress size={22} color="inherit" />
+                                ) : (
+                                  <DeleteIcon />
+                                )}
                               </IconButton>
                             </Box>
                           )
@@ -1197,7 +1222,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                     titulo="Deseja deletar a categoria?"
                     mensagem="Atenção! Todas as transações relacionadas também serão excluídas."
                     onConfirm={() => DeleteCategoria(selectedId)}
-                  />    
+                  />
                   <Box
                     border={"solid 1px grey"}
                     borderRadius={5}
@@ -1214,18 +1239,21 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                       {categorias.map(
                         (item) =>
                           item.tipo === "receita" && (
-                            <Box  key={item.id} className="pill-categoria">
+                            <Box key={item.id}  backgroundColor="#CBD6E0" className="pill-categoria">
                               <p>{item.nome}</p>
                               <IconButton
                                 size="small"
+                                color="error"
                                 onClick={() => {
-                                  setOpen(true)
+                                  setOpen(true);
                                   setSelectedId(item.id);
                                 }}
                               >
-                                {loadingId=== item.id ?
-                                 <CircularProgress size={22} color="inherit" /> :
-                                  <DeleteIcon /> }
+                                {loadingId === item.id ? (
+                                  <CircularProgress size={22} color="inherit" />
+                                ) : (
+                                  <DeleteIcon />
+                                )}
                               </IconButton>
                             </Box>
                           )
@@ -1239,9 +1267,6 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                     mensagem="Atenção! Todas as transações relacionadas também serão excluídas."
                     onConfirm={() => DeleteCategoria(selectedId)}
                   />
-
-
-
                 </Box>
               )}
 
@@ -1251,7 +1276,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                   display={"flex"}
                   flexDirection={"column"}
                   alignItems={"center"}
-                  >
+                >
                   <div className="box-tabela">
                     <Box border={"solid 1px grey"} borderRadius={5} padding={1}>
                       <h3>Gerencie suas transações</h3>
@@ -1279,7 +1304,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                               <TableCell
                                 sx={{
                                   fontWeight: "bold",
-                                  backgroundColor: "#814f8bff",
+                                  backgroundColor: "#CBD6E0",
                                 }}
                               >
                                 Nome
@@ -1287,7 +1312,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                               <TableCell
                                 sx={{
                                   fontWeight: "bold",
-                                  backgroundColor: "#814f8bff",
+                                  backgroundColor: "#CBD6E0",
                                 }}
                               >
                                 Categoria
@@ -1295,7 +1320,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                               <TableCell
                                 sx={{
                                   fontWeight: "bold",
-                                  backgroundColor: "#814f8bff",
+                                  backgroundColor: "#CBD6E0",
                                 }}
                               >
                                 Membro
@@ -1303,7 +1328,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                               <TableCell
                                 sx={{
                                   fontWeight: "bold",
-                                  backgroundColor: "#814f8bff",
+                                  backgroundColor: "#CBD6E0",
                                 }}
                               >
                                 Data
@@ -1311,7 +1336,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                               <TableCell
                                 sx={{
                                   fontWeight: "bold",
-                                  backgroundColor: "#814f8bff",
+                                  backgroundColor: "#CBD6E0",
                                 }}
                               >
                                 Valor
@@ -1319,7 +1344,7 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                               <TableCell
                                 sx={{
                                   fontWeight: "bold",
-                                  backgroundColor: "#814f8bff",
+                                  backgroundColor: "#CBD6E0",
                                 }}
                               >
                                 Acoes
@@ -1342,15 +1367,21 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                                 <TableCell>
                                   {
                                     <Box display={"flex"}>
-                                     
-                                      <IconButton size="small" onClick={()=>{
-                                        setSelectedId(item.id)
-                                        setOpenTrans(true)}}>
-                                       
-                                         {loadingId=== item.id ?
-                                          <CircularProgress size={22} color="inherit" /> :
-                                          <DeleteIcon /> }
-                                        
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          setSelectedId(item.id);
+                                          setOpenTrans(true);
+                                        }}
+                                      >
+                                        {loadingId === item.id ? (
+                                          <CircularProgress
+                                            size={22}
+                                            color="inherit"
+                                          />
+                                        ) : (
+                                          <DeleteIcon />
+                                        )}
                                       </IconButton>
                                     </Box>
                                   }
@@ -1369,35 +1400,20 @@ export function ModalConfig({ onClose,  reload, onUpdated }) {
                     mensagem="Atenção! Todas as informações serao excluídas permanentemente."
                     onConfirm={() => DeleteTransacao(selectedId)}
                   />
-
-                  
-                
                 </Box>
-
-                
               )}
             </Box>
           </Box>
         </div>
       </div>
 
-      <Snackbar
-        open={snackOpen}
-        autoHideDuration={5000}
-        onClose={() => setSnackOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackOpen(false)}
-          severity={snackType}
-          sx={{ width: "100%" }}
-        >
-          {snackMessage}
-        </Alert>
-      </Snackbar>
-
-
-      
+      <BoxAlerta
+        open={openAlert}
+        onClose={() => setOpenAlert(false)}
+        duration={5000}
+        mensagem={alertaMensagem}
+        type={alertaTipo}
+      />
     </div>
   );
 }

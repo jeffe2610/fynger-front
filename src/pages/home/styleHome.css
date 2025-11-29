@@ -1,47 +1,33 @@
-.container1{
+.container1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  
-  
- /* to testando */  
-  
 }
-.menu{
+.menu {
   display: flex;
- 
+
   box-sizing: border-box;
-  background-color: #ffffff60;
+  background-color:var(--gray-border);
   width: 100%;
   padding: 10px;
-  color: #3b234a;
+  color: var(--gray-text);
   justify-content: space-between;
   align-items: center;
-  
-   
-  
+  box-shadow: 0px 0px 10px ;
 }
 
-
-  
-
-
-
-.informacoes{
+.informacoes {
   display: flex;
   gap: 10px;
   align-items: center;
   font-size: smaller;
-  
 }
-
-
 
 /* CONTEÚDO PRINCIPAL */
 .container-center {
   flex: 1; /* ocupa todo o espaço restante */
-  
-  color: white;
+
+  color: var(--gray-text);
   padding: 20px;
   box-sizing: border-box;
 
@@ -49,67 +35,51 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 1600px; /* impede que o conteúdo se estenda demais */
-   /* centraliza horizontalmente */
-  
+  max-width: 1600px;
 }
 
-.dashboard-cards{
-  
+.dashboard-cards {
   padding: 5px;
   display: flex;
   gap: 10px;
   width: 100%;
-  
+
   justify-content: center;
   margin: 1px 0;
-  
-
-  
 }
-.cards-1{
-  background-color: #ffffff60;
+.cards-1 {
+  
   border-radius: 10px;
   box-sizing: border-box;
   width: 25%;
   padding: 30px;
-  flex: 1 1 250px; /* cresce e encolhe, tamanho base 250px */
-  box-shadow: 
-        0 4px 30px rgba(0, 0, 0, 0.2),   /* sombra principal suave */
-        0 0 20px rgba(0, 0, 0, 0.1); 
-  
-  
+  flex: 1 1 50px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
 }
-.cards-2{
-  
+.cards-2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
-
-  background-color: #ffffff60;
+  
 
   border-radius: 10px;
   box-sizing: border-box;
   width: 50%;
   height: 360px;
-  box-shadow: 
-  0 4px 30px rgba(0, 0, 0, 0.2),   /* sombra principal suave */
-  0 0 20px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.cards-3{
-  background-color: #ffffff60;
+.cards-3 {
+ 
   border-radius: 10px;
   box-sizing: border-box;
-  
+
   height: 500px;
-  box-shadow: 
-        0 4px 30px rgba(0, 0, 0, 0.2),   /* sombra principal suave */
-        0 0 20px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
 }
-#trans{
+#trans {
   width: 70%;
   padding: 20px;
   overflow-y: auto;
@@ -120,77 +90,78 @@
   overflow-x: auto;
 }
 
-.cards-1,.cards-2,.cards-3{
+.cards-1,
+.cards-2,
+.cards-3 {
   transition: all 0.3s ease-in-out;
-  border: solid;
+  background-color: var(--gray-light);
+  
 }
 
-.cards-1:hover,.cards-2:hover,.cards-3:hover{
-scale: 1.02;
+.cards-1:hover,
+.cards-2:hover,
+.cards-3:hover {
+  scale: 1.02;
 }
-
-
 
 @media (max-width: 768px) {
- 
-  
   .container1 {
-    flex-direction: column; /* empilha sidebar e conteúdo */
+    flex-direction: column;
     align-items: center;
   }
 
-  #menu-but{
-    background-color: rgb(255, 255, 255);
-    position:absolute;
+  .informacoes{
+    font-size: x-small;
+  }
+
+  #menu-but {
+    background-color:var(--gray-border);
+    position: absolute;
     bottom: 0;
     left: 0;
     width: 100vw;
     z-index: 2000;
-    height: 70px;
+    height: 60px;
     & hr {
       height: 70%;
       align-self: center;
       opacity: 40%;
     }
-    
   }
   .menu {
     width: 100vw;
     height: auto;
     
-    
-    
   }
-  
+
   .container-center {
     padding: 20px;
     font-size: smaller;
-    margin-bottom: 45px;
+    margin-bottom: 35px;
   }
 
-  .dashboard-cards{
+  .dashboard-cards {
     flex-direction: column;
-    
   }
 
-  .cards-1,.cards-2,.cards-3{
+  .cards-1,
+  .cards-2,
+  .cards-3 {
     width: 98vw;
     height: fit-content;
   }
-  #trans,#membros{
+  #trans,
+  #membros {
     width: 98vw;
-   
   }
 }
 
-
-#logout{
-    color:  #8b5cf6;
-    margin-bottom: 0px;
-    transition: all 0.3s ease-in-out;
-    align-self: center;
-    cursor: pointer;
-    
+#logout {
+  color: #8b5cf6;
+  margin-bottom: 0px;
+  transition: all 0.3s ease-in-out;
+  align-self: center;
+  cursor: pointer;
 }
 #logout:hover {
   color: red;

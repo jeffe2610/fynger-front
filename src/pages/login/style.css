@@ -1,40 +1,30 @@
-.container{
-    display: flex;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+.container {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  flex-direction: column;
+  & h1 {
+    font-size: 42px;
+    font-weight: 600;
     
-    flex-direction: column;
-    & h1 {
-        font-size: 42px;
-        font-weight: 600;
-        color: #3b234a        
-    }
+  }
 }
 
+.formularios {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #fff;
 
+  width: 100%;
+  max-width: 600px;
 
-.formularios{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10px;
-    padding: 30px;
-    border-radius: 10px;
-    background-color: #fff;
-    
-    width: 100%;
-    max-width: 600px;
-    
-    box-shadow: 
-        0 4px 30px rgba(0, 0, 0, 0.2),   /* sombra principal suave */
-        0 0 20px rgba(0, 0, 0, 0.1);      /* espalhamento difuso nos 4 lados */
-    align-items: center;
-
-    
-    
-    
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
-
-

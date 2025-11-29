@@ -1,79 +1,66 @@
 /* CARD DE MEMBROS*/
 
-
-.principal{
-    border: solid 2px;
-    color: black;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px;
-    margin-bottom: 15px;
-    border-radius: 15px;
-    
-
+.principal {
+  border: solid 2px;
+  color: var(--gray-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  margin-bottom: 15px;
+  border-radius: 15px;
 }
 
-#avatar{
-    width: 60px;
-    height: 60px;
-    border: solid 1px black;
+#avatar {
+  width: 60px;
+  height: 60px;
+  border: solid 1px black;
 }
 
-.nome-gasto{
-    font-size: 15px;
-    text-align: left;
-    
-    & span{
-        font-size: x-small;
-    }
+.nome-gasto {
+  font-size: 15px;
+  text-align: left;
+
+  & span {
+    font-size: x-small;
+  }
 }
-
-
 
 /* modal */
 
-.overlay{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    background-color: rgba(0, 0, 0, 0.514);
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    padding: 20px;
-    z-index: 1000;
-    
-    
-    
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.514);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  z-index: 1000;
 }
 
-
 .container-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    
-
-}  
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 100vh;
+}
 
 .scroll-area {
   padding: 10px;
-  overflow-y: hidden; /* 👈 começa sem scroll visível */
+  overflow-y: hidden; 
   max-height: calc(90vh - 40px);
   display: flex;
   flex-direction: column;
   gap: 10px;
   transition: overflow 0.3s ease;
-  
-  
 }
 
-/* quando o mouse passa em cima do modal, ativa o scroll */
+
 .form-trans:hover .scroll-area {
   overflow-y: auto;
 }
@@ -87,42 +74,37 @@
   background-color: #b7b7b7;
   border-radius: 8px;
 }
-.form-trans{
-    overflow: hidden;
-    max-width:600px;
-    max-height:90vh;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    border-radius: 15px;
-    padding: 5px;
-    background-color: #fff;
-    color: blueviolet;
-    gap: 20px;
+.form-trans {
+  overflow: hidden;
+  max-width: 600px;
+  max-height: 90vh;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  padding: 5px;
+  background-color: var(--white);
+  color: var(--gray-text);
+  gap: 20px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+
+  box-sizing: border-box;
+  & input {
+    background-color:var(--gray-border);
     
-    box-sizing: border-box;
-    & input {
-      background-color: #ffffff7c;
-    }
-   
+  }
 }
-.box-tabela{
+
+/* Modal de configuração aba de transações */
+
+.box-tabela {
   width: 99%;
   padding: 1px;
 }
 
+/* Modal de configuração aba de categorias */
 
-
-
-.button{
-    display: flex;
-    
-    
-
-}
-
-
-.pill-categoria{
+.pill-categoria {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -134,49 +116,48 @@
   border-radius: 50px;
 }
 
-.pill-categoria:hover{
+.pill-categoria:hover {
   background-color: #b7b7b752;
-  cursor: pointer
+  cursor: pointer;
 }
 
-.foto-perfil{
+.foto-perfil {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 20px;
-  & label{
+  & label {
     border: solid 1px;
     padding: 5px;
     border-radius: 10px;
     cursor: pointer;
   }
-  & label:hover{
-    background-color: rgba(137, 43, 226, 0.212);
+  & label:hover {
+    background-color:#CBD6E0;
   }
 }
 
-
-
+/*  Modo Mobile */
 
 @media (max-width: 768px) {
-  
-  .box-tabela{
-  width: 90vw;
-  padding: 1px;
+  .box-tabela {
+    width: 90vw;
+    padding: 1px;
   }
 
-  .overlay{
+  .overlay {
     padding: 0;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
+    background-color:#F4F7FA
   }
 
-  .form-trans{
+  .form-trans {
     height: 100%;
-    border-radius: 0;
+    border-radius: 15px;
   }
 
-
-
+  .cards-1 {
+    padding: 2px;
+  }
 }

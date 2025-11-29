@@ -1,3 +1,117 @@
+:root {
+  /* === Cores principais (logo) === */
+  --primary: #2A8CFF;          /* Azul digital */
+  --primary-light: #66BFFF;    /* Azul suave */
+  --primary-ultra: #DCEEFF;    /* Azul extremamente leve */
+  --primary-neutral: #4A7DBB;  /* Azul profissional */
+
+  /* === Cores Aqua (brilho do ícone) === */
+  --aqua: #61DFF0;
+  --aqua-light: #A8F4FF;
+
+  /* === Neutros clean === */
+  --white: #FFFFFF;
+  --gray-light: #F4F7FA;
+  --gray-border: #CBD6E0;
+  --gray-text: #4A5568;
+
+  /* === Feedback === */
+  --success: #31CC8A;
+  --warning: #FFB84D;
+  --error: #FF6464;
+}
+
+/* ==== ESTILOS BASE ==== */
+body {
+  background: var(--gray-light);
+  color: var(--gray-text);
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: 0.3s ease;
+}
+
+/* ==== CARDS ==== */
+.card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--gray-border);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  transition: box-shadow .2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+}
+
+/* ==== BOTÃO PRIMÁRIO ==== */
+.button-primary {
+  background: var(--primary);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(42,140,255,0.25);
+  transition: 0.25s;
+}
+
+.button-primary:hover {
+  background: var(--primary-light);
+  box-shadow: 0 4px 18px rgba(102,191,255,0.3);
+}
+
+.button-primary:active {
+  background: var(--primary-neutral);
+}
+
+/* ==== BOTÃO SECUNDÁRIO ==== */
+.button-secondary {
+  background: var(--aqua);
+  color: #073B4C;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(97,223,240,0.25);
+  transition: .25s;
+}
+
+.button-secondary:hover {
+  background: var(--aqua-light);
+  box-shadow: 0 4px 18px rgba(168,244,255,0.3);
+}
+
+/* ==== INPUTS ==== */
+input {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  padding: 12px 14px;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+  font-size: 15px;
+  transition: border .2s ease, box-shadow .2s ease;
+}
+
+input:focus {
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 8px rgba(42,140,255,0.3);
+}
+
+/* ==== GRADIENTE CLEAN ==== */
+.gradient-clean {
+  background: linear-gradient(135deg, #DCEEFF, #A8F4FF);
+}
+
+.gradient-strong {
+  background: linear-gradient(135deg, #66BFFF, #A8F4FF);
+}
+
+
 *{
   padding: 0;
   margin: 0;
@@ -14,11 +128,10 @@ body, html{
   overflow-x: hidden;
   overscroll-behavior-x: none;
   overscroll-behavior-y: none ;
-    background: linear-gradient(
-    135deg,
-    #3b234a,
-    #d4c7bf
-  );
+  background: var(--gray-light);
+  color: var(--gray-text);
+  
+
   
 }
 

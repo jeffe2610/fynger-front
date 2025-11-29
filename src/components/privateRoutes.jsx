@@ -1,8 +1,6 @@
-// src/components/PrivateRoute.jsx
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import api from "../services/api"; // axios com baseURL=http://localhost:5000 e withCredentials=true
-
+import api from "../services/api";
 function PrivateRoute({ children }) {
   const [loading, setLoading] = useState(true);
   const [autenticado, setAutenticado] = useState(false);

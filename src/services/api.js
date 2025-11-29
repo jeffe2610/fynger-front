@@ -1,11 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: 
+  baseURL:
     import.meta.env.MODE === "development"
-    ? "http://localhost:5000"
-    :  "https://fynger.onrender.com", // backend Express
- 
+      ? "http://localhost:5000"
+      : "https://fynger.onrender.com",
 });
 
 api.interceptors.request.use((config) => {
