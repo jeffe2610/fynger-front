@@ -21,14 +21,15 @@ function LoadingInicial() {
     <Box
       sx={{
         height: "100vh",
+
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      <img src="\512x512.png" alt="fynger-logo" height="500px" width="500px" />
-      <CircularProgress size={60} />
+      <img src="\512x512.png" alt="fynger-logo" height="300px" width="300px" />
+      <CircularProgress size={40} />
     </Box>
   );
 }
