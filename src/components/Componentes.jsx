@@ -144,6 +144,7 @@ export function BoxAlerta({ open, duration, onClose, type, mensagem }) {
       autoHideDuration={duration}
       onClose={onClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      
     >
       <Alert onClose={onClose} severity={type} sx={{ width: "100%" }}>
         {mensagem}
@@ -315,11 +316,11 @@ export function TabelaTransacoes({ dados }) {
               {item.tipo === "receita" ? (
                 <TableCell
                   sx={{ color: "green", fontWeight: "bold" }}
-                >{`+${formatarMoeda(item.valor)}`}</TableCell>
+                >{`+${formatarMoeda((item.valor))}`}</TableCell>
               ) : (
                 <TableCell
                   sx={{ color: "red", fontWeight: "bold" }}
-                >{`-${formatarMoeda(item.valor)}`}</TableCell>
+                >{`${formatarMoeda(-item.valor)}`}</TableCell>
               )}
             </TableRow>
           ))}
@@ -518,7 +519,7 @@ export function Modal({ onClose, reload, onUpdated }) {
               onChange={(e) => setDescricao(e.target.value)}
               variant="outlined"
               disabled={!tipo}
-              required
+              
             />
 
             <FormControl fullWidth margin="normal">
@@ -581,6 +582,7 @@ export function Modal({ onClose, reload, onUpdated }) {
             {pagamento === "parcelado" && tipo === "despesa" && (
               <div>
                 <TextField
+                  required
                   label="quantidade de parcelas"
                   type="number"
                   variant="outlined"
@@ -589,6 +591,7 @@ export function Modal({ onClose, reload, onUpdated }) {
                 />
 
                 <TextField
+                  required
                   label="1º vencimento"
                   type="date"
                   variant="filled"
@@ -601,6 +604,7 @@ export function Modal({ onClose, reload, onUpdated }) {
 
             <TextField
               fullWidth
+              required
               label="Data"
               type="date"
               variant="filled"
