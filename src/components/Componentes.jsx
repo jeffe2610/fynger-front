@@ -191,16 +191,17 @@ export function GraficoPizza({ dados, titulo }) {
               cx="50%"
               cy="50%"
               outerRadius="80%"
-              label
+              label={(entry) => `R$ ${entry.valor.toFixed(2)}`}
             >
               {dados.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
+
                 />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip  formatter={(value) => `R$ ${value.toFixed(2)}`} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>
