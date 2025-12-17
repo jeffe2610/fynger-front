@@ -16,7 +16,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<LoadingInicial />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={ <PrivateRoute>
+          <Home />
+          </PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
