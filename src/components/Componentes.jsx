@@ -321,7 +321,7 @@ export function TabelaTransacoes({ dados }) {
               ) : (
                 <TableCell
                   sx={{ color: "red", fontWeight: "bold" }}
-                >{`${formatarMoeda(-item.valor)}`}</TableCell>
+                >{`${formatarMoeda(item.valor)}`}</TableCell>
               )}
             </TableRow>
           ))}

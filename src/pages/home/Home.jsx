@@ -40,7 +40,8 @@ function Home() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await api.post("/logout");
+    localStorage.removeItem("token")
+
     navigate("/");
   }
 
@@ -120,7 +121,10 @@ function Home() {
 
   const atual = meses.find((m) => m.mes === mesAtual) || 0;
   const anterior = meses.find((m) => m.mes === mesAnterior) || 0;
-
+   console.log("mes atual", mesAtual)
+  console.log("vindo da api", meses)
+  console.log("atual", atual)
+  console.log("anterior", anterior)
   return (
     <div className="container1">
       <menu className="menu">
