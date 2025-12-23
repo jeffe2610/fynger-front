@@ -39,7 +39,7 @@ function LoadingInicial() {
         setMensagem(
           "Esse é o primeiro acesso após um tempo sem uso. Já estamos quase lá 🙂"
         );
-      }, 25000);
+      }, 20000);
 
       t3 = setTimeout(() => {
         setMensagem(
@@ -71,8 +71,8 @@ function LoadingInicial() {
       }}
     >
       <img src="\512x512.png" alt="fynger-logo" height="300px" width="300px" />
-      {erro ? <GppBadIcon sx={{ fontSize: 80, color:"red" }}/> : <CircularProgress size={40} />}
-      {erro? <h3 style={{color:'red'}}>{erro}</h3>: <h3>{mensagem}</h3> }
+      {erro ? <GppBadIcon sx={{ fontSize: 40, color:"red" }}/> : <CircularProgress size={40} />}
+      {erro? <h3 style={{color:'red',textAlign:"center", padding:"20px"}}>{erro}</h3>: <h3 style={{textAlign:"center", padding:"20px"}}>{mensagem}</h3> }
       
     </Box>
   );
