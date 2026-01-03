@@ -104,6 +104,25 @@
   scale: 1.02;
 }
 
+.drawer {
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+  
+  background-color: var(--gray-border);
+  & button {
+    
+    color: var(--gray-light);
+    gap: 10px;
+    height: 45px;
+    font-weight: bold; 
+    background-color:#4A5568; }:hover{
+      background-color: #4a556877;
+    }
+}
+
 @media (max-width: 768px) {
   .container1 {
     flex-direction: column;
@@ -114,6 +133,9 @@
     font-size: x-small;
   }
 
+  .drawer{
+    margin-bottom: 70px;
+  }
   #menu-but {
     background-color:var(--gray-border);
     position: absolute;

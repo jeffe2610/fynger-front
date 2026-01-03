@@ -2,6 +2,7 @@ import "./styleHome.css";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import GroupsIcon from '@mui/icons-material/Groups';
 import {
   GraficoPizza,
   GraficoLinha,
@@ -10,18 +11,22 @@ import {
   Modal,
   MiniCard,
   ModalConfig,
+  SubmitButton
 } from "../../components/Componentes";
 import {
   Avatar,
   BottomNavigation,
   BottomNavigationAction,
+  Box,
   Button,
+  Drawer
 } from "@mui/material";
 import { format, subMonths } from "date-fns";
 import HomeIcon from "@mui/icons-material/Home";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import MenuIcon from '@mui/icons-material/Menu';
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +43,7 @@ function Home() {
   const [nomeGrupo, setNomeGrupo] = useState("");
   const [reload, setReload] = useState(false);
   const navigate = useNavigate();
+  const [openDrawer, setOpenDrawer] = useState(null)
 
   async function handleLogout() {
     localStorage.removeItem("token")
@@ -60,9 +66,7 @@ function Home() {
         setShowModalConfig(false),
         setReload((prev) => !prev);
     }
-    if (newValue === "sair") {
-      handleLogout;
-    }
+   
   };
 
   useEffect(() => {
@@ -121,10 +125,14 @@ function Home() {
 
   const atual = meses.find((m) => m.mes === mesAtual) || 0;
   const anterior = meses.find((m) => m.mes === mesAnterior) || 0;
-   console.log("mes atual", mesAtual)
-  console.log("vindo da api", meses)
-  console.log("atual", atual)
-  console.log("anterior", anterior)
+  
+  const handleClick = () => {
+    setOpenDrawer((prev => !prev))
+  }
+
+
+
+
   return (
     <div className="container1">
       <menu className="menu">
@@ -153,34 +161,52 @@ function Home() {
           value={selecao}
           onChange={handleChange}
           sx={{ backgroundColor: "transparent" }}
+          
         >
           <BottomNavigationAction
             label="Inicio"
             value={"inicio"}
             icon={<HomeIcon />} 
+            disabled={openDrawer}
           />{" "}
           <hr />
           <BottomNavigationAction
             label="Transações"
             value={"novaTransacao"}
             icon={<CurrencyExchangeIcon />}
+             disabled={openDrawer}
           />{" "}
           <hr />
           <BottomNavigationAction
             label="Ajustes"
             value={"ajustes"}
             icon={<SettingsIcon />}
+             disabled={openDrawer}
           />{" "}
           <hr />
           <BottomNavigationAction
-            label="Sair"
-            value={"sair"}
-            icon={<ExitToAppIcon />}
-            onClick={handleLogout}
+            label="Menu"
+            value={"menu"}
+            icon={<MenuIcon />}
+            onClick={handleClick}
             sx={{ color: "red" }}
           />{" "}
           hr
         </BottomNavigation>
+        
+         <Drawer open={openDrawer} onClose={()=>setOpenDrawer(false)} anchor="bottom">
+          <div className='drawer'>
+              <Button >
+                Alterar para grupo <GroupsIcon/> 
+              </Button>
+              <Button
+              onClick={handleLogout}>
+                Sair <ExitToAppIcon/>
+              </Button>
+          </div>
+
+        </Drawer>
+      
       </menu>
 
       {showModal && (
