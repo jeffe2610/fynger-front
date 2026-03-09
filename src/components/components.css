@@ -4,7 +4,6 @@
   border: solid 2px;
   color: var(--gray-text);
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 5px;
   margin-bottom: 15px;
@@ -18,12 +17,9 @@
 }
 
 .nome-gasto {
-  font-size: 15px;
+  font-size: 12px;
   text-align: left;
-
-  & span {
-    font-size: x-small;
-  }
+  padding-left:15px;
 }
 
 /* modal */

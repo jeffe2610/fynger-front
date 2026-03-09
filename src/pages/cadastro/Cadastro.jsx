@@ -21,8 +21,6 @@ function Cadastro() {
   const [senha, setSenha] = useState("");
   const [csenha, setCsenha] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tipo, setTipo] = useState(" ");
-  const [codigo, setCodigo] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [alertaMensagem, setAlertaMensagem] = useState("");
@@ -33,11 +31,7 @@ function Cadastro() {
 
     try {
       const Res = await api.post(
-        "/signup",
-        tipo === "Membro"
-          ? { email, password: senha, nome, tel, grupoId: codigo }
-          : { email, password: senha, nome, tel }
-      );
+        "/signup", { email, password: senha, nome, tel });
       alert("cadastro realizado com sucesso!");
       navigate("/");
     } catch (err) {
@@ -54,40 +48,18 @@ function Cadastro() {
       <div className="form-trans">
         <div className="scroll-area">
           <form onSubmit={handleSignup}>
-            <h3>Cadastro</h3>
-            <FormControl fullWidth margin="normal">
-              <FormLabel>Tipo de cadastro</FormLabel>
-              <RadioGroup
-                row
-                value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
-              >
-                <FormControlLabel
-                  value="Membro"
-                  control={<Radio />}
-                  label="Membro"
+            <div style={{display:"flex", justifyContent:"space-between",alignItems:"center"}} >
+              <h3>Cadastro</h3>
+              <img
+                src="\512x512.png"
+                alt="Fynger.logo"
+                height={"100px"}
+                width={"100px"}
                 />
-                <FormControlLabel
-                  required
-                  value="Administrador"
-                  control={<Radio />}
-                  label="Administardor"
-                />
-              </RadioGroup>
-            </FormControl>
+            </div>
+            
 
-            {tipo === "Membro" && (
-              <TextField
-                size="small"
-                margin="normal"
-                label="codigo do grupo"
-                type="text"
-                value={codigo}
-                required
-                onChange={(e) => setCodigo(e.target.value)}
-                variant="outlined"
-              />
-            )}
+            
 
             <TextField
               fullWidth
@@ -152,13 +124,14 @@ function Cadastro() {
               required
               inputProps={{
                 pattern: senha
+                  // eslint-disable-next-line no-useless-escape
                   ? senha.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
                   : ".*",
                 title: "As senhas não correspondem",
               }}
             />
 
-            <div className="button" style={{  justifyItems:'center' }}>
+            <div style={{  justifyItems:'center' }}>
               <SubmitButton
                 variant="contained"
                 disabled={loading}

@@ -21,6 +21,7 @@ function Login() {
     try {
       const res = await api.post("/login", { email, password: senha });
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("contexto", "pessoal");
       navigate("/Home");
     } catch (err) {
       let localError = err.response?.data?.error || "Falha ao fazer login";

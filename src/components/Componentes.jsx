@@ -42,6 +42,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Modal,
 } from "@mui/material";
 import "./components.css";
 import Avatar from "@mui/material/Avatar";
@@ -50,9 +51,10 @@ import { format } from "date-fns";
 import { formatarMoeda } from "../utils/formatarMoeda";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
-import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import { UseContexto } from "../context/contexto";
 
 // Paleta de cores
 const COLORS = ["#2A8CFF", "#9dd3df", "#61DFF0", "#3b3737", "#4A5568"];
@@ -85,16 +87,17 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   backgroundColor: "transparent",
   color: theme.palette.text.primary,
   "&.Mui-selected": {
-    backgroundColor: '#4A5568',
+    backgroundColor: "#4A5568",
     color: theme.palette.common.white,
   },
   "&:hover": {
-    backgroundColor: '#4a556894',
+    backgroundColor: "#4a556894",
   },
 }));
 
 export const SubmitButton = styled(Button)({
-  backgroundColor: '#4A5568',
+  backgroundColor: "#4A5568",
+  textTransform: "none",
   color: "white",
   borderRadius: "10px",
   height: "40px",
@@ -102,10 +105,17 @@ export const SubmitButton = styled(Button)({
   cursor: "pointer",
   margin: "15px 0px 15px 0px",
   "&:hover": {
-    backgroundColor: '#4a556877',
+    backgroundColor: "#4a556877",
   },
 });
 
+export const DrawerButton = styled(Button)({
+  backgroundColor: "#4A5568",
+  color: "white",
+  borderRadius: "10px",
+  height: "40px",
+  width: "100%",
+});
 export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -116,20 +126,25 @@ export function BoxDialog({ open, onClose, titulo, mensagem, onConfirm }) {
       </DialogContent>
 
       <DialogActions>
-        
         {onConfirm && (
-
-        <Button
-          onClick={() => {
-            onConfirm();
-            onClose();
-          }}
-        >
-          Confirmar
-        </Button>
+          <Button
+            sx={{
+              backgroundColor:"#4A5568",
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: "#333",
+              },
+            }}
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+          >
+            Confirmar
+          </Button>
         )}
 
-        <Button onClick={onClose} autoFocus>
+        <Button onClick={onClose} sx={{color:"GrayText",borderColor:"GrayText"}} variant="outlined" autoFocus>
           voltar
         </Button>
       </DialogActions>
@@ -144,7 +159,6 @@ export function BoxAlerta({ open, duration, onClose, type, mensagem }) {
       autoHideDuration={duration}
       onClose={onClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      
     >
       <Alert onClose={onClose} severity={type} sx={{ width: "100%" }}>
         {mensagem}
@@ -165,7 +179,7 @@ export function GraficoPizza({ dados, titulo }) {
         justifyContent: "center",
       }}
     >
-      <h1 style={{  fontSize: "1.2rem" }}>{titulo}</h1>
+      <h1 style={{ fontSize: "1.2rem" }}>{titulo}</h1>
 
       <div style={{ width: "100%", height: "250px" }}>
         {!dados ||
@@ -197,11 +211,10 @@ export function GraficoPizza({ dados, titulo }) {
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
-
                 />
               ))}
             </Pie>
-            <Tooltip  formatter={(value) => `R$ ${value.toFixed(2)}`} />
+            <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -215,7 +228,7 @@ export function GraficoLinha({ titulo, reload }) {
   useEffect(() => {
     async function fetch() {
       try {
-        const res = await api.get("/card-receita");
+        const res = await api.get("/cards-receitas-despesas");
         if (res.data) {
           setDados(res.data);
         }
@@ -250,14 +263,14 @@ export function GraficoLinha({ titulo, reload }) {
             <Line
               name="Despesas"
               type="monotone"
-              dataKey="total_despesas"
+              dataKey="despesa"
               stroke="#922929fd"
               activeDot={{ r: 8 }}
             />
             <Line
               name="Receitas"
               type="monotone"
-              dataKey="total_receitas"
+              dataKey="receita"
               stroke="#2e5a34ff"
             />
           </LineChart>
@@ -268,6 +281,7 @@ export function GraficoLinha({ titulo, reload }) {
 }
 
 export function TabelaTransacoes({ dados }) {
+  const { contexto } = UseContexto();
   return (
     <TableContainer
       sx={{
@@ -279,29 +293,24 @@ export function TabelaTransacoes({ dados }) {
       <Table size="medium" stickyHeader>
         <TableHead sx={{ backgroundColor: "transparent" }}>
           <TableRow>
-            <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
-            >
+            <TableCell sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}>
               Nome
             </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold", backgroundColor:"#CBD6E0" }}
-            >
+            <TableCell sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}>
               Categoria
             </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
-            >
-              Membro
-            </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
-            >
+            {contexto === "grupo" && (
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
+              >
+                Membro
+              </TableCell>
+            )}
+
+            <TableCell sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}>
               Data
             </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}
-            >
+            <TableCell sx={{ fontWeight: "bold", backgroundColor: "#CBD6E0" }}>
               Valor
             </TableCell>
           </TableRow>
@@ -312,12 +321,13 @@ export function TabelaTransacoes({ dados }) {
             <TableRow key={item.id}>
               <TableCell>{item.nome}</TableCell>
               <TableCell>{item.categoria}</TableCell>
-              <TableCell>{item.membro}</TableCell>
+              {contexto === "grupo" && <TableCell>{item.membro}</TableCell>}
+
               <TableCell>{format(item.data, "dd/MM/yyyy")}</TableCell>
               {item.tipo === "receita" ? (
                 <TableCell
                   sx={{ color: "green", fontWeight: "bold" }}
-                >{`+${formatarMoeda((item.valor))}`}</TableCell>
+                >{`+${formatarMoeda(item.valor)}`}</TableCell>
               ) : (
                 <TableCell
                   sx={{ color: "red", fontWeight: "bold" }}
@@ -352,7 +362,7 @@ export function CardUser(reload) {
   useEffect(() => {
     async function fetchuser() {
       try {
-        const res = await api.get("/grupo");
+        const res = await api.get("/membros");
         if (res.data) {
           setMembros(res.data);
         }
@@ -377,17 +387,14 @@ export function CardUser(reload) {
       <div className="nome-gasto">
         <h3>{item.nome}</h3>
         <span className="perfil">{item.perfil}</span>
-        <p>gastos: {formatarMoeda(item.total_despesas)}</p>
-      </div>
-      <div className="contribuicao">
-        <span>contribuição</span>
-        <h4>{formatarMoeda(item.total_receitas)}</h4>
+
+        <p>gastos: {formatarMoeda(item.gasto)}</p>
       </div>
     </div>
   ));
 }
 
-export function Modal({ onClose, reload, onUpdated }) {
+export function ModalTransacao({ onClose, reload, onUpdated }) {
   const [loading, setLoading] = useState(false);
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
@@ -520,7 +527,6 @@ export function Modal({ onClose, reload, onUpdated }) {
               onChange={(e) => setDescricao(e.target.value)}
               variant="outlined"
               disabled={!tipo}
-              
             />
 
             <FormControl fullWidth margin="normal">
@@ -625,7 +631,7 @@ export function Modal({ onClose, reload, onUpdated }) {
               disabled={!tipo}
             />
 
-            <SubmitButton  type="submit" disabled={loading}>
+            <SubmitButton type="submit" disabled={loading}>
               {loading ? (
                 <CircularProgress size={22} color="inherit" />
               ) : (
@@ -683,11 +689,10 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
   const [telefone, setTelefone] = useState("");
   const [senha, setSenha] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
-  const [nomeGrupo, setNomeGrupo] = useState("");
+  
   const [categorias, setCategorias] = useState([]);
   const [tipoCategoria, setTipoCategoria] = useState("");
-  const [descGrupo, setDescGrupo] = useState("");
-  const [membros, setMembros] = useState([]);
+
   const [nomeCategoria, setNomeCategoria] = useState("");
   const [transacoes, setTransacoes] = useState([]);
   const [avatar, setAvatar] = useState("");
@@ -695,32 +700,22 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
   const [selectedId, setSelectedId] = useState(null);
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [openGrupo, setOpenGrupo] = useState(false);
+  
   const [alertaMensagem, setAlertaMensagem] = useState("");
   const [alertaTipo, setAlertaTipo] = useState("");
-  const [ grupoId, setGrupoId] = useState("")
+
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const showAlerta = (msg, type ) => {
+  const showAlerta = (msg, type) => {
     setAlertaMensagem(msg);
     setAlertaTipo(type);
-    console.log(type)
-    console.log(alertaTipo)
     setOpenAlert(true);
   };
 
-  const copiar = async () => {
-    try {
-      await navigator.clipboard.writeText(grupoId);
-      showAlerta("Codigo copiado", 'success')
-    } catch (error) {
-      console.log(error)
-      showAlerta('Nao foi possivel Copiar o codigo', 'error')
-    }
-  };
+
   useEffect(() => {
     async function fetch() {
       try {
@@ -729,11 +724,10 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
           setNome(res.data.nome);
           setEmail(res.data.email);
           setTelefone(res.data.telefone);
-          setNomeGrupo(res.data.nomeGrupo);
-          setMembros(res.data.membros);
+    
           setCategorias(res.data.categorias);
           setAvatar(res.data.avatar);
-          setGrupoId(res.data.grupo_id)
+       
         }
       } catch (error) {
         console.log(error);
@@ -770,8 +764,8 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
     } catch (error) {
       let localError =
         error.response?.data?.error || "erro ao registrar atualização";
-      
-        showAlerta(localError, "error");
+
+      showAlerta(localError, "error");
     } finally {
       setLoading(false);
     }
@@ -797,23 +791,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
     }
   }
 
-  async function handleupdategrupo(e) {
-    setLoading(true);
-    e.preventDefault();
-
-    try {
-      const Res = await api.put("/atualizar-grupo", { nomeGrupo });
-      showAlerta("Grupo Atualizado!", "success");
-      onUpdated();
-    } catch (error) {
-      let localError =
-        error.response?.data?.error || "erro ao registrar atualização";
-      showAlerta(localError, "error");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  
   async function handleAddcategoria(e) {
     e.preventDefault();
     setLoading(true);
@@ -877,7 +855,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                 <CloseIcon />
               </IconButton>
             </Box>
-            <span>Gerencie seu perfil, Grupo, Categorias e trasacoes. </span>
+            <span> Gerencie seu perfil, Grupo, Categorias e trasacoes. </span>
 
             <StyledTabs
               value={tabValue}
@@ -888,7 +866,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
               }}
             >
               <StyledTab label="Perfil" />
-              <StyledTab label="Grupo" />
+             
               <StyledTab label="Categoria" />
               <StyledTab label="Transações" />
             </StyledTabs>
@@ -926,7 +904,6 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                         size="small"
                         type="text"
                         value={nome}
-        
                         onChange={(e) => setNome(e.target.value)}
                       />
 
@@ -989,118 +966,8 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                   </Box>
                 </Box>
               )}
-              {tabValue === 1 && (
-                <Box maxWidth={"600px"}>
-                  <Box
-                    border={"solid 1px grey"}
-                    borderRadius={5}
-                    padding={2}
-                    marginBottom={2}
-                  >
-                    <h3>Informacoes do grupo</h3>
-                    <p>Configure o nome e descriação do Grupo/Familia</p>
-
-                    <TextField
-                      fullWidth
-                      margin="normal"
-                      label="Nome do grupo"
-                      variant="outlined"
-                      type="text"
-                      size="small"
-                      value={nomeGrupo}
-                      onChange={(e) => setNomeGrupo(e.target.value)}
-                    />
-
-                    <TextField
-                      fullWidth
-                      margin="normal"
-                      label="Descrição"
-                      variant="outlined"
-                      type="text"
-                      size="small"
-                      value={descGrupo}
-                      onChange={(e) => setDescGrupo(e.target.value)}
-                    />
-
-                    <SubmitButton onClick={handleupdategrupo}>
-                      {loading ? (
-                        <CircularProgress size={22} color="inherit" />
-                      ) : (
-                        "Salvar Atualização"
-                      )}
-                    </SubmitButton>
-                  </Box>
-                  <Box
-                    border={"solid 1px grey"}
-                    borderRadius={5}
-                    padding={2}
-                    marginBottom={2}
-                  >
-                    <h3>Membros do grupo</h3>
-                    <p>Gerencie os membros do seu Grupo/Familia</p>
-
-                    {membros.map((item) => (
-                      <Box
-                        border={"solid 1px"}
-                        padding={"5px"}
-                        display={"flex"}
-                        gap={"10px"}
-                        justifyContent={"space-between"}
-                        margin={"10px"}
-                        borderRadius={"10px"}
-                      >
-                        <Box
-                          display={"flex"}
-                          gap={"10px"}
-                          alignItems={"center"}
-                        >
-                          <Avatar
-                            src={`${item.avatar}?t=${Date.now()}`}
-                            sx={{ width: "60px", height: "60px" }}
-                          />
-                          <Box>
-                            <p>{item.nome}</p>
-                            <h6>{item.email}</h6>
-                          </Box>
-                        </Box>
-                        <IconButton color="error">
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    ))}
-
-                    <SubmitButton onClick={()=>setOpenGrupo(true)}> Convidar Novo Membro</SubmitButton>
-                  </Box>
-
-                     <Dialog open={openGrupo} onClose={()=>setOpenGrupo(false)}>
-                        <DialogTitle>Codigo do grupo</DialogTitle>
-
-                        <DialogContent>
-                          <DialogContentText>Aqui está o código do seu grupo! <br/>
-                           Envie para os outros membros para que eles possam entrar. 
-                           <TextField fullWidth
-                           margin="normal"
-                           variant="filled"
-                           
-                           value={grupoId}
-                           label="codigo do grupo"
-                           size="small"
-                           />
-                           </DialogContentText>
-
-                        </DialogContent>
-                        <DialogActions>
-                          <IconButton size="large" onClick={copiar}> 
-                            <ContentCopyRoundedIcon/>
-                          </IconButton>
-                          <Button onClick={()=>setOpenGrupo(false)}>voltar</Button>
-                          
-                        </DialogActions>
-                      </Dialog>
-
-                </Box>
-              )}
-              {tabValue === 2 && (
+             
+              {tabValue ===  1 && (
                 <Box maxWidth={"600px"}>
                   <Box
                     border={"solid 1px grey"}
@@ -1146,7 +1013,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                             required
                             labelId="categoria-label"
                             id="categorias"
-                            sx={{backgroundColor:"#CBD6E0"}}
+                            sx={{ backgroundColor: "#CBD6E0" }}
                             value={tipoCategoria}
                             onChange={(e) => setTipoCategoria(e.target.value)}
                           >
@@ -1158,29 +1025,28 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                           </Select>
                         </FormControl>
 
-                        <IconButton 
-                         type="submit"
+                        <IconButton
+                          type="submit"
                           sx={{
                             marginTop: "7px",
-                            backgroundColor: '#4A5568',
+                            backgroundColor: "#4A5568",
                             color: "#fff",
                             fontWeight: "bold",
                             height: "100%",
                             overflow: "hidden",
                           }}
-                          disabled={loading}>
-                            {loading ? (
+                          disabled={loading}
+                        >
+                          {loading ? (
                             <CircularProgress
                               size={22}
                               color="inherit
                             "
                             />
                           ) : (
-                            <AddCircleOutlineIcon/>
+                            <AddCircleOutlineIcon />
                           )}
-                          
                         </IconButton>
-                        
                       </Box>
                     </form>
                   </Box>
@@ -1200,7 +1066,10 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                       {categorias.map(
                         (item) =>
                           item.tipo === "despesa" && (
-                            <Box className="pill-categoria"  backgroundColor="#CBD6E0">
+                            <Box
+                              className="pill-categoria"
+                              backgroundColor="#CBD6E0"
+                            >
                               <p>{item.nome}</p>
                               <IconButton
                                 size="small"
@@ -1217,7 +1086,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                                 )}
                               </IconButton>
                             </Box>
-                          )
+                          ),
                       )}
                     </Box>
                   </Box>
@@ -1244,7 +1113,11 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                       {categorias.map(
                         (item) =>
                           item.tipo === "receita" && (
-                            <Box key={item.id}  backgroundColor="#CBD6E0" className="pill-categoria">
+                            <Box
+                              key={item.id}
+                              backgroundColor="#CBD6E0"
+                              className="pill-categoria"
+                            >
                               <p>{item.nome}</p>
                               <IconButton
                                 size="small"
@@ -1261,7 +1134,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                                 )}
                               </IconButton>
                             </Box>
-                          )
+                          ),
                       )}
                     </Box>
                   </Box>
@@ -1275,7 +1148,7 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
                 </Box>
               )}
 
-              {tabValue === 3 && (
+              {tabValue === 2 && (
                 <Box
                   maxWidth={"600px"}
                   display={"flex"}
@@ -1420,5 +1293,415 @@ export function ModalConfig({ onClose, reload, onUpdated }) {
         type={alertaTipo}
       />
     </div>
+  );
+}
+
+export function ModalGrupo({ open, onClose, funcao ,idGroup,onUpdated, alerta}) {
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [codigoGrupo, setCodigoGrupo] = useState("")
+  const [loading, setLoading] = useState(false);
+  const [categorias, setCategorias] = useState([]);
+  const [tipoCategoria, setTipoCategoria] = useState("");
+  const [nomeCategoria, setNomeCategoria] = useState("");
+  const [loadingId, setLoadingId] = useState(false);
+  const [openDel, setOpenDel] = useState(false);
+  const [selectedId, setSelectedId] = useState(false)
+  const [ reload, setReload] = useState(false)
+
+  
+  useEffect(()=>{
+    async function fetchCategorias() {
+      try {
+        const res = await api.get("/categorias-pill", {
+  params: { idGroup }});
+        if (res.data) {
+          setCategorias(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if(open){
+      fetchCategorias()
+    }
+  },[open,idGroup, reload])
+
+
+  async function HandlerCreateGrupo(e) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const Res = await api.post("/create-group", {
+        nome,
+        descricao,
+      });
+      onUpdated()
+      alerta("Grupo Criado","success")
+      onClose()
+    } catch (error) {
+      let localError = error.response?.data?.error || "erro ao criar grupo";
+      alerta(localError, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+  async function HandlerUpdate(e) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const Res = await api.put("/update-group", {
+        nome,
+        descricao,
+        idGroup
+      });
+      onUpdated()
+      alerta("Grupo Editado","success")
+      onClose()
+    } catch (error) {
+      let localError = error.response?.data?.error || "erro ao Atualizar grupo";
+      alerta(localError,"error")
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
+  async function entrarGrupo(e) {
+      e.preventDefault()
+      setLoading(true)
+      try {
+        const Res = await api.post("/entrar-grupo",{codigoGrupo});
+        onUpdated()
+        alerta("voce entrou no grupo","success")
+        onClose()
+      } catch (error) {
+        let localError = error.response.data.message || "Algo deu errado";
+        
+        alerta(localError,"error")
+
+        
+
+        }finally{
+          setLoading(false)
+        }
+      
+    }
+
+    async function handleAddcategoria(e) {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await api.post("/add-categoria", { nomeCategoria, tipoCategoria,idGroup  });
+      alerta("Categoria adicionada!", "success");
+      setReload((prev)=>!prev)
+    } catch (error) {
+      let localError =
+        error.response?.data?.error || "erro ao registrar categoria";
+      alerta(localError, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function DeleteCategoria(id) {
+    setLoadingId(id);
+
+    try {
+      await api.delete("/del-categoria", {
+        data: { id },
+      });
+      setReload((prev)=>!prev)
+      alerta("Categoria deletada com sucesso", "success");
+    } catch (error) {
+      let localError = error.message || "erro ao deletar";
+      alerta(localError, "error");
+      console.log(localError);
+    } finally {
+      setLoadingId(null);
+    }
+  }
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Box
+        sx={{
+          width: { xs: "100%", sm: "600px" },
+          height: { xs: "99vh", sm: "95vh" },
+          bgcolor: "whitesmoke",
+          padding: "20px",
+          borderRadius: "15px",
+          overflow: "auto",
+        }}
+      >
+        <form
+          onSubmit={funcao === "editar" ? HandlerUpdate : HandlerCreateGrupo}
+          style={{
+            border: "solid 1px gray",
+            padding: "10px",
+            marginBottom: "10px",
+            borderRadius: "7px",
+          }}
+        >
+          <h3>{funcao === "editar" ? "Editar Grupo" : "Criar Novo Grupo"}</h3>
+          <p>
+            {funcao === "editar"
+              ? "Edite as informações do seu Grupo"
+              : "crie um novo grupo parar gerir financas Compartilhadas"}
+          </p>
+
+          <TextField
+            required={funcao === "criar"}
+            size="small"
+            fullWidth
+            margin="normal"
+            label="Nome do grupo"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            variant="outlined"
+            inputProps={{ maxLength: 50 }}
+          />
+          <TextField
+            multiline
+            minRows={1}
+            maxRows={3}
+            fullWidth
+            onChange={(e) => setDescricao(e.target.value)}
+            margin="normal"
+            label="Descrição"
+            value={descricao}
+            variant="outlined"
+            inputProps={{ maxLength: 150 }}
+          />
+
+          <Box sx={{ display: "flex", gap: "12px" }}>
+            <SubmitButton
+              type="submit"
+              disabled={!(nome || descricao)}
+              sx={{ flex: "1" }}
+            >
+              {loading ? (
+                <CircularProgress size={22} color="inherit" />
+              ) : funcao === "editar" ? (
+                "Salvar"
+              ) : (
+                "Criar Grupo"
+              )}
+            </SubmitButton>
+          </Box>
+        </form>
+        {funcao === "criar" && (
+          <Box
+            border={"solid 1px grey"}
+            borderRadius={2}
+            padding={2}
+            marginBottom={2}
+          >
+            <h3>Entrar em grupo: </h3>
+            <TextField
+              size="small"
+              fullWidth
+              placeholder="Insira o codigo do grupo"
+              label={"Codigo"}
+              value={codigoGrupo}
+              onChange={(e) => setCodigoGrupo(e.target.value)}
+            />
+
+            <SubmitButton disabled={!codigoGrupo} onClick={entrarGrupo}>
+              entrar
+            </SubmitButton>
+          </Box>
+        )}
+        
+
+        {funcao === "editar" && (
+          <Box maxWidth={"600px"}>
+            <Box
+              border={"solid 1px grey"}
+              borderRadius={5}
+              padding={2}
+              marginBottom={2}
+            >
+              <h3>Adcionar Nova Categoria</h3>
+              <p>
+                Crie Categorias personalizadas para organizar suas transacoes
+              </p>
+              <form onSubmit={handleAddcategoria}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "5px",
+                    alignItems: "center",
+                    padding: "15px",
+                  }}
+                >
+                  <TextField
+                    margin="normal"
+                    required
+                    label="Nome da categoria"
+                    type="text"
+                    size="small"
+                    variant="outlined"
+                    value={nomeCategoria}
+                    onChange={(e) => setNomeCategoria(e.target.value)}
+                  />
+
+                  <FormControl
+                    required
+                    sx={{ width: "150px" }}
+                    margin="normal"
+                    size="small"
+                  >
+                    <InputLabel id="categoria-label">Categorias</InputLabel>
+                    <Select
+                      required
+                      labelId="categoria-label"
+                      id="categorias"
+                      sx={{ backgroundColor: "#CBD6E0" }}
+                      value={tipoCategoria}
+                      onChange={(e) => setTipoCategoria(e.target.value)}
+                    >
+                      <MenuItem value="">
+                        <em>Selecione</em>
+                      </MenuItem>
+                      <MenuItem value="despesa">Despesa</MenuItem>
+                      <MenuItem value="receita">Receita</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <IconButton
+                    type="submit"
+                    sx={{
+                      marginTop: "7px",
+                      backgroundColor: "#4A5568",
+                      color: "#fff",
+                      fontWeight: "bold",
+                      height: "100%",
+                      overflow: "hidden",
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <CircularProgress
+                        size={22}
+                        color="inherit
+                            "
+                      />
+                    ) : (
+                      <AddCircleOutlineIcon />
+                    )}
+                  </IconButton>
+                </Box>
+              </form>
+            </Box>
+            <Box
+              border={"solid 1px grey"}
+              borderRadius={5}
+              padding={2}
+              marginBottom={2}
+            >
+              <h3>Categorias de Despesas</h3>
+              <Box
+                display={"flex"}
+                flexWrap={"wrap"}
+                gap={"15px"}
+                padding={"15px"}
+              >
+                {categorias.map(
+                  (item) =>
+                    item.tipo === "despesa" && (
+                      <Box className="pill-categoria" backgroundColor="#CBD6E0">
+                        <p>{item.nome}</p>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => {
+                            setOpenDel(true);
+                            setSelectedId(item.id);
+                          }}
+                        >
+                          {loadingId === item.id ? (
+                            <CircularProgress size={22} color="inherit" />
+                          ) : (
+                            <DeleteIcon />
+                          )}
+                        </IconButton>
+                      </Box>
+                    ),
+                )}
+              </Box>
+            </Box>
+            <BoxDialog
+              open={openDel}
+              onClose={() => setOpenDel(false)}
+              titulo="Deseja deletar a categoria?"
+              mensagem="Atenção! Todas as transações relacionadas também serão excluídas."
+              onConfirm={() => DeleteCategoria(selectedId)}
+            />
+            <Box
+              border={"solid 1px grey"}
+              borderRadius={5}
+              padding={2}
+              marginBottom={2}
+            >
+              <h3>Categoria de Receitas</h3>
+              <Box
+                display={"flex"}
+                flexWrap={"wrap"}
+                gap={"15px"}
+                padding={"15px"}
+              >
+                {categorias.map(
+                  (item) =>
+                    item.tipo === "receita" && (
+                      <Box
+                        key={item.id}
+                        backgroundColor="#CBD6E0"
+                        className="pill-categoria"
+                      >
+                        <p>{item.nome}</p>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => {
+                            setOpenDel(true);
+                            setSelectedId(item.id);
+                          }}
+                        >
+                          {loadingId === item.id ? (
+                            <CircularProgress size={22} color="inherit" />
+                          ) : (
+                            <DeleteIcon />
+                          )}
+                        </IconButton>
+                      </Box>
+                    ),
+                )}
+              </Box>
+            </Box>
+            
+            <BoxDialog
+              open={openDel}
+              onClose={() => setOpenDel(false)}
+              titulo="Deseja deletar a categoria?"
+              mensagem="Atenção! Todas as transações relacionadas também serão excluídas."
+              onConfirm={() => DeleteCategoria(selectedId)}
+            />
+          </Box>
+        )}
+        <p>ATENÇÃO: Após a criação do grupo, o administrador deverá cadastrar as categorias para que as transações possam ser registradas corretamente.</p>
+        <SubmitButton onClick={onClose}>Voltar</SubmitButton>
+      </Box>
+    </Modal>
   );
 }
